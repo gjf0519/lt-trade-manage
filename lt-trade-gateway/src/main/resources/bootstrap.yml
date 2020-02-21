@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: lt-trade-gateway
+  cloud:
+    nacos:
+      discovery:
+        enabled: true
+        server-addr: 192.168.1.68:8848
+      config:
+        server-addr: 192.168.1.68:8848
+        file-extension: yaml
+    gateway:
+      enabled: true
+      discovery:
+        locator:
+          lower-case-service-id: true
+    sentinel:
+      datasource.ds2.file:
+        file: "classpath: server-route.json"
+        ruleType: gw-flow
+      datasource.ds1.file:
+        file: "classpath: server-api.json"
+        ruleType: gw-api-group
+#      datasource.ds1.nacos:
+#        server-addr: 192.168.1.68:8848
+#        data-id: ${spring.application.name}-sentinel-api.json
+#        group-id: DEFAULT_GROUP
+#        ruleType: gw-api-group
+#      datasource.ds2.nacos:
+#        server-addr: 192.168.1.68:8848
+#        data-id: ${spring.application.name}-sentinel-route.json
+#        group-id: DEFAULT_GROUP
+#        ruleType: gw-flow
+      transport:
+        dashboard: localhost:8080 #Sentinel 控制台地址
+        port: 8719 #应用与Sentinel控制台交互的端口
+      filter:
+        enabled: true
+      scg.fallback:
+        mode: response #流控处理逻辑 (选择 redirect or response)
+        response-status: 444
+        response-body: 服务器累坏了!
+      scg:
+        order: -100
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

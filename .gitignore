@@ -1,0 +1,4 @@
+# Project exclude paths
+/lt-trade-business/target/
+/lt-trade-gateway/target/
+/lt-trade-tushare/target/
