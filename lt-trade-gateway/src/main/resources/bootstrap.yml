@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: lt-trade-gateway
@@ -15,22 +18,22 @@ spring:
         locator:
           lower-case-service-id: true
     sentinel:
-      datasource.ds2.file:
-        file: "classpath: server-route.json"
-        ruleType: gw-flow
-      datasource.ds1.file:
-        file: "classpath: server-api.json"
-        ruleType: gw-api-group
-#      datasource.ds1.nacos:
-#        server-addr: 192.168.1.68:8848
-#        data-id: ${spring.application.name}-sentinel-api.json
-#        group-id: DEFAULT_GROUP
-#        ruleType: gw-api-group
-#      datasource.ds2.nacos:
-#        server-addr: 192.168.1.68:8848
-#        data-id: ${spring.application.name}-sentinel-route.json
-#        group-id: DEFAULT_GROUP
+#      datasource.ds2.file:
+#        file: "classpath: server-route.json"
 #        ruleType: gw-flow
+#      datasource.ds1.file:
+#        file: "classpath: server-api.json"
+#        ruleType: gw-api-group
+      datasource.ds2.nacos:
+        server-addr: 192.168.1.68:8848
+        data-id: ${spring.application.name}-sentinel-route.json
+        group-id: DEFAULT_GROUP
+        ruleType: gw-flow
+      datasource.ds1.nacos:
+        server-addr: 192.168.1.68:8848
+        data-id: ${spring.application.name}-sentinel-api.json
+        group-id: DEFAULT_GROUP
+        ruleType: gw-api-group
       transport:
         dashboard: localhost:8080 #Sentinel 控制台地址
         port: 8719 #应用与Sentinel控制台交互的端口
@@ -43,11 +46,12 @@ spring:
       scg:
         order: -100
 
-server:
-  port: 8080
-
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+
+logging:
+  level:
+    root: debug

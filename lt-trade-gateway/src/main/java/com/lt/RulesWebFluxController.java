@@ -20,12 +20,12 @@ import java.util.Set;
  */
 @RestController
 public class RulesWebFluxController {
-    @GetMapping("/gate/api")
+    @GetMapping("/api")
     public Mono<Set<ApiDefinition>> apiRules() {
         return Mono.just(GatewayApiDefinitionManager.getApiDefinitions());
     }
 
-    @GetMapping("/gate/route")
+    @GetMapping("/route")
     public Mono<Set<GatewayFlowRule>> apiGateway() {
         return Mono.just(GatewayRuleManager.getRules());
     }
