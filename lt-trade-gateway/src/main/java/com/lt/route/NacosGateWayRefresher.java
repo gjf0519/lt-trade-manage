@@ -27,27 +27,29 @@ public class NacosGateWayRefresher implements ApplicationListener<ApplicationRea
 
 	@Autowired
 	private NacosConfigManager nacosConfigManager;
-
 	@Autowired
 	private NacosConfigProperties nacosConfigProperties;
-
-	private final boolean isRefreshEnabled = true;
-
-	private ConfigService configService;
-
-	private AtomicBoolean ready = new AtomicBoolean(false);
-
-	private Map<String, Listener> listenerMap = new ConcurrentHashMap<>(16);
-
 	@Autowired
 	DynamicRouteExecute dynamicRouteExecute;
+	private final boolean isRefreshEnabled = true;
+	private ConfigService configService;
+	private AtomicBoolean ready = new AtomicBoolean(false);
+	private Map<String, Listener> listenerMap = new ConcurrentHashMap<>(16);
+	private final String routeConfigFileName;
+	private final String routeConfigFileGroup;
+
+	public NacosGateWayRefresher (String routeConfigFileName,
+								  String routeConfigFileGroup){
+		this.routeConfigFileName = routeConfigFileName;
+		this.routeConfigFileGroup = routeConfigFileGroup;
+	}
 
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		configService = nacosConfigManager.getConfigService();
 		try {
-			String cotent = configService.getConfig("lt-trade-gateway.yaml","DEFAULT_GROUP",5000);
-			dynamicRouteExecute.add(cotent);
+			String routes = configService.getConfig(routeConfigFileName,routeConfigFileGroup,5000);
+			dynamicRouteExecute.add(routes);
 		} catch (NacosException e) {
 			e.printStackTrace();
 		}

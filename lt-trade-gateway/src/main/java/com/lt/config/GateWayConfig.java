@@ -1,14 +1,11 @@
 package com.lt.config;
 
-import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.BlockRequestHandler;
 import com.lt.route.DynamicRouteExecute;
 import com.lt.route.NacosGateWayRefresher;
 import com.lt.route.NacosRouteDefinitionRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.server.ServerResponse;
-import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 /**
  * @author gaijf
@@ -23,8 +20,10 @@ public class GateWayConfig {
      * @return
      */
     @Bean
-    public NacosGateWayRefresher nacosGateWayRefresher(){
-        return new NacosGateWayRefresher();
+    public NacosGateWayRefresher nacosGateWayRefresher(
+            @Value("${route.config.file-name}") String routeConfigFileName,
+            @Value("${route.config.file-group}") String routeConfigFileGroup){
+        return new NacosGateWayRefresher(routeConfigFileName,routeConfigFileGroup);
     }
 
     /**

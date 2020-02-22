@@ -2,28 +2,17 @@ server:
   port: 8080
 
 spring:
-  application:
-    name: lt-trade-gateway
   cloud:
     nacos:
       discovery:
         enabled: true
         server-addr: 192.168.1.68:8848
-      config:
-        server-addr: 192.168.1.68:8848
-        file-extension: yaml
     gateway:
       enabled: true
       discovery:
         locator:
           lower-case-service-id: true
     sentinel:
-#      datasource.ds2.file:
-#        file: "classpath: server-route.json"
-#        ruleType: gw-flow
-#      datasource.ds1.file:
-#        file: "classpath: server-api.json"
-#        ruleType: gw-api-group
       datasource.ds2.nacos:
         server-addr: 192.168.1.68:8848
         data-id: ${spring.application.name}-sentinel-route.json

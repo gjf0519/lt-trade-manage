@@ -20,7 +20,7 @@ import static java.util.Collections.synchronizedMap;
 public class NacosRouteDefinitionRepository implements RouteDefinitionRepository {
 
     private final Map<String, RouteDefinition> routes = synchronizedMap(
-            new LinkedHashMap<String, RouteDefinition>());
+            new LinkedHashMap<>());
 
     @Override
     public Mono<Void> save(Mono<RouteDefinition> route) {

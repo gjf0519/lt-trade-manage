@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: lt-trade-gateway
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.1.68:8848
+        namespace: #默认(空)代表public命名空间
+        file-extension: yaml #默认是properties
+#        extension-configs[0]:  #扩展配置文件
+#          data-id: gateway-route.json
+#          group: DEFAULT_GROUP
+#          refresh: true
