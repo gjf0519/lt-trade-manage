@@ -10,7 +10,7 @@
     <!--日志文件存放位置-->
     <property name="app.path" value="/logs"/>
     <!--定义参数,后面可以通过${app.name}使用-->
-    <property name="app.name" value="lt-trade-tushare"/>
+    <property name="app.name" value="lt-trade-tencent"/>
 
     <!-- 彩色日志 -->
     <!-- 彩色日志依赖的渲染类 -->

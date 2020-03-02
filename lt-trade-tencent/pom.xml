@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.lt</groupId>
-    <artifactId>lt-trade-tushare</artifactId>
+    <artifactId>lt-trade-tencent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>lt-trade-tushare</name>
+    <name>lt-trade-tencent</name>
 
     <parent>
         <groupId>com.lt</groupId>
@@ -36,6 +36,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
         <!-- MySQL数据库-->
         <dependency>
@@ -66,9 +70,5 @@
             <version>4.5.9</version>
         </dependency>
         <!-- http工具类-->
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
     </dependencies>
 </project>

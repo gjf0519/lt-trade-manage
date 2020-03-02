@@ -1,0 +1,17 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lt.mapper.TushareMapper">
+    <insert id="saveStockBasic" parameterType="java.util.List">
+        insert into lt_stock_basic (ts_code, symbol,name,area,industry,market,list_status,is_hs) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.ts_code},#{item.symbol},#{item.name},#{item.area},#{item.industry},#{item.market},#{item.list_status},#{item.is_hs})
+        </foreach>
+    </insert>
+    <insert id="saveDailyBasic" parameterType="java.util.List">
+        insert into lt_daily_basic (ts_code,trade_date,turnover_rate,turnover_rate_f,volume_ratio
+            ,ps,ps_ttm,total_share,float_share,free_share,total_mv,circ_mv,pct_chg) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.ts_code},#{item.trade_date},#{item.turnover_rate},#{item.turnover_rate_f},#{item.volume_ratio},#{item.ps},
+            #{item.ps_ttm},#{item.total_share},#{item.float_share},#{item.free_share},#{item.total_mv},#{item.circ_mv},#{item.pct_chg})
+        </foreach>
+    </insert>
+</mapper>

@@ -10,6 +10,8 @@
         <module>lt-trade-business</module>
         <module>lt-trade-tushare</module>
         <module>lt-trade-gateway</module>
+        <module>lt-trade-tencent</module>
+        <module>lt-trade-common</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -38,6 +40,11 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.51</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
