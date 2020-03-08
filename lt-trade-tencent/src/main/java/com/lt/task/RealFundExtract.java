@@ -40,7 +40,7 @@ public class RealFundExtract {
     @Autowired
     ThreadPoolExecutor threadPoolExecutor;
 
-    @Scheduled(cron = "0 0 17 * * ? ")// 0/1 * * * * *
+    @Scheduled(cron = "0 45 18 * * ? ")// 0/1 * * * * *
     public void execute() throws ParseException {
         List<String> codes = RealCodeUtil.getCodesStr(splitSize,Constants.STOCK_CODE,prefix);
         if (TimeUtil.isEffectiveDate(startAm,endAm,timeFormat)
@@ -53,11 +53,6 @@ public class RealFundExtract {
             System.out.println("RealFundExtract:总数:"+threadPoolExecutor.getTaskCount()+"完成:"+
                     threadPoolExecutor.getCompletedTaskCount()+"等待:"+count+"线程数量:"+threadPoolExecutor.getPoolSize());
         }
-//        try {
-//            Thread.sleep(20000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
     }
 
     private class RealThread implements Runnable {

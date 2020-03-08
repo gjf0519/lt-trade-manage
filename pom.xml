@@ -7,11 +7,12 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <modules>
-        <module>lt-trade-business</module>
+        <module>lt-trade-view</module>
+        <module>lt-trade-common</module>
         <module>lt-trade-tushare</module>
         <module>lt-trade-gateway</module>
         <module>lt-trade-tencent</module>
-        <module>lt-trade-common</module>
+        <module>lt-trade-business</module>
     </modules>
 
     <packaging>pom</packaging>

@@ -26,7 +26,7 @@ public class RealCodeUtil {
             } else {
                 items = codes.subList(splitSize * i, splitSize * (i + 1));
             }
-            joinPrefix(items,prefix);
+            items = joinPrefix(items,prefix);
             result = String.join(",",items);
             list.add(result);
         }
@@ -50,19 +50,20 @@ public class RealCodeUtil {
             } else {
                 items = codes.subList(splitSize * i, splitSize * (i + 1));
             }
-            joinPrefix(items,prefix);
+            items = joinPrefix(items,prefix);
             list.add(items);
         }
         return list;
     }
 
-    public static void joinPrefix(List<String> codes,String prefix){
-        if(null != prefix && !"".endsWith(prefix)){
-            for (int i = 0;i < codes.size();i++){
-                String code = codes.get(i);
+    public static List<String> joinPrefix(List<String> codes,String prefix){
+        List <String> result = new ArrayList<>();
+        for (int i = 0;i < codes.size();i++){
+            String code = codes.get(i);
+            if(prefix != null)
                 code = prefix+code;
-                codes.set(i,code);
-            }
+            result.add(code);
         }
+        return result;
     }
 }

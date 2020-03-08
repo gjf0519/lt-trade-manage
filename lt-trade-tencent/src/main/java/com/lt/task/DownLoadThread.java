@@ -36,7 +36,7 @@ public class DownLoadThread implements Runnable{
     }
     @Override
     public void run() {
-        System.out.println(JSON.toJSONString(codes));
+//        System.out.println(JSON.toJSONString(codes));
         for (String code:codes) {
             code = code.startsWith("sh") ? code.replace("sh","0"):
                     code.replace("sz","1");
@@ -77,7 +77,6 @@ public class DownLoadThread implements Runnable{
             if(next < 5){
                 downloadHttp(restTemplate,url,storagePath,++next);
             }
-            System.out.println(url);
         }catch (IOException e) {
             e.printStackTrace();
         }
