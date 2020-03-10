@@ -6,21 +6,21 @@ spring:
     name: lt-trade-view
   main:
     allow-bean-definition-overriding: true
-    datasource:
-      type: com.alibaba.druid.pool.DruidDataSource
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      username: gjf
-      password: gjf613
-      url: jdbc:mysql://192.168.1.68:3306/lt_trade?useUnicode=true&characterEncoding=utf-8
-      druid:
-        initial-size: 1 #初始化时建立的连接数
-        max-active: 5 #最大活跃数
-        max-wait: 60000 #等待超时时间
-        filter: stat,wall #监控与SQL注入过滤器
-        stat-view-servlet: #监控页面
-          enabled: true
-          login-username: gailt
-          login-password: gailt
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: gjf
+    password: gjf613
+    url: jdbc:mysql://192.168.1.68:3306/lt_trade?useUnicode=true&characterEncoding=utf-8
+    druid:
+      initial-size: 1 #初始化时建立的连接数
+      max-active: 5 #最大活跃数
+      max-wait: 60000 #等待超时时间
+      filter: stat,wall #监控与SQL注入过滤器
+      stat-view-servlet: #监控页面
+        enabled: true
+        login-username: gailt
+        login-password: gailt
   thymeleaf:
     cache: false
     encoding: UTF-8

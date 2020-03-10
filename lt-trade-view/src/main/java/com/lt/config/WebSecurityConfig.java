@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -26,7 +27,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService.getUserDetailsService()).passwordEncoder(new BCryptPasswordEncoder());
+        auth.inMemoryAuthentication()
+                .withUser("admin1") // 管理员，同事具有 ADMIN,USER权限，可以访问所有资源
+                .password("admin1")
+                .roles("ADMIN", "USER")
+                .and();
+//        auth.userDetailsService(userService.getUserDetailsService()).passwordEncoder(new BCryptPasswordEncoder());
     }
 
 
@@ -35,18 +41,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //允许基于HttpServletRequest使用限制访问
         http.authorizeRequests()
                 //不需要身份认证
-                .antMatchers("/", "/home","/toLogin","/**/customer/**").permitAll()
-                .antMatchers("/js/**", "/css/**", "/images/**", "/fronts/**", "/doc/**", "/toLogin").permitAll()
-                .antMatchers("/user/**").hasAnyRole("USER")
-                //.hasIpAddress()//读取配置权限配置
-                .antMatchers("/**").access("hasRole('ADMIN')")
-                .anyRequest().authenticated()
+                .antMatchers("/js/**", "/css/**", "/images/**", "/login.html").permitAll()
                 //自定义登录界面
-                .and().formLogin().loginPage("/toLogin").loginProcessingUrl("/login").failureUrl("/toLogin?error").permitAll()
+                .and().formLogin().loginPage("/login").loginProcessingUrl("/login").successForwardUrl("/index").failureUrl("/toLogin?error").permitAll()
                 .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .and().exceptionHandling().accessDeniedPage("/toLogin?deny")
                 .and().httpBasic()
-                .and().sessionManagement().invalidSessionUrl("/toLogin")
                 .and().csrf().disable();
     }
 }
