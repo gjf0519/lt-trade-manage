@@ -11,8 +11,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,7 +32,7 @@ public class UserService {
     @Autowired
     PermissionMapper permissionMapper;
 
-    public UserDetailsService getUserDetailsService(){
+    public UserDetails loadUserByUsername(String userName){
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         // 从数据库中取出用户信息
         LtUser user = userMapper.queryUsers();
@@ -47,10 +45,6 @@ public class UserService {
                 authorities.add(new SimpleGrantedAuthority(permission.getResource()));
             }
         }
-        UserDetailsService userDetailsService = s ->  {
-            UserDetails userDetails = new User(user.getUserName(), user.getPassWord(), authorities);
-            return userDetails;
-        };
-        return userDetailsService;
+        return new User(user.getUserName(), user.getPassWord(), authorities);
     }
 }

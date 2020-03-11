@@ -13,7 +13,7 @@ layui.use(['form','layer','jquery'],function(){
     form.on("submit(login)",function(data){
         $(this).text("登录中...").attr("disabled","disabled").addClass("layui-disabled");
         setTimeout(function(){
-            window.location.href = "/layuicms2.0";
+            window.location.href = "/authorize";
         },1000);
         return false;
     })
