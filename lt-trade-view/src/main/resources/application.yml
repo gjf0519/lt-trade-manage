@@ -5,4 +5,4 @@ spring:
   application:
     name: lt-trade-view
   profiles:
-    active: work
+    active: home

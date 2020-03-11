@@ -2,7 +2,9 @@ package com.lt.config;
 
 import com.lt.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,13 +28,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private UserService userService;
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().passwordEncoder(new BCryptPasswordEncoder()).withUser("user")
-                .password(new BCryptPasswordEncoder().encode("111111")).roles("USER");
-//        auth.userDetailsService(userService.getUserDetailsService()).passwordEncoder(new BCryptPasswordEncoder());
-    }
+//    @Autowired
+//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.inMemoryAuthentication().passwordEncoder(new BCryptPasswordEncoder()).withUser("user")
+//                .password(new BCryptPasswordEncoder().encode("111111")).roles("USER");
+////        auth.userDetailsService(userService.getUserDetailsService()).passwordEncoder(new BCryptPasswordEncoder());
+//    }
 
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
     /**
      * 认证模式配置 默认form+basic认证
@@ -58,5 +64,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
         http.httpBasic();
         http.csrf().disable();
+        http.apply(securityConfigurerAdapter());
+    }
+
+    private AuthTokenConfigurer securityConfigurerAdapter() {
+        return new AuthTokenConfigurer(userService);
+    }
+
+    public static void main(String[] args) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String password = bCryptPasswordEncoder.encode("123456");
+        System.out.println(password);
     }
 }

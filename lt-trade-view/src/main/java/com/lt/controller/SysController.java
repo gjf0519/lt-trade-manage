@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.token.Token;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,7 +36,7 @@ public class SysController {
      * @param password
      * @return
      */
-    @RequestMapping(value = "authorize",method = RequestMethod.POST)
+    @PostMapping("authorize")
     public Token authorize(@RequestParam String username, @RequestParam String password) {
         // 1 创建UsernamePasswordAuthenticationToken
         UsernamePasswordAuthenticationToken token

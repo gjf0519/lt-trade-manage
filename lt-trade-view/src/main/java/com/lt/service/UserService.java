@@ -35,7 +35,7 @@ public class UserService {
     public UserDetails loadUserByUsername(String userName){
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         // 从数据库中取出用户信息
-        LtUser user = userMapper.queryUsers();
+        LtUser user = userMapper.loadUserByUsername(userName);
         //查询用户角色
         List<LtRole> userRoles = roleMapper.listByUserId(user.getId());
         for (LtRole userRole : userRoles) {
@@ -45,6 +45,6 @@ public class UserService {
                 authorities.add(new SimpleGrantedAuthority(permission.getResource()));
             }
         }
-        return new User(user.getUserName(), user.getPassWord(), authorities);
+        return new User(user.getUserName(), user.getPassword(), authorities);
     }
 }

@@ -19,7 +19,7 @@ import java.util.Date;
 public class LtUser {
     private int id;
     private String userName;
-    private String passWord;
+    private String password;
     private String email;
     private Date updateTime;
     private Date createTime;
