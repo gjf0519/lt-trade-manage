@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -28,12 +29,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private UserService userService;
 
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.inMemoryAuthentication().passwordEncoder(new BCryptPasswordEncoder()).withUser("user")
-//                .password(new BCryptPasswordEncoder().encode("111111")).roles("USER");
-////        auth.userDetailsService(userService.getUserDetailsService()).passwordEncoder(new BCryptPasswordEncoder());
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        // 创建内存用户
+//        /*auth.inMemoryAuthentication()
+//                .withUser("user").password(passwordEncoder.encode("123")).roles("USER")
+//                .and()
+//                .withUser("admin").password(passwordEncoder.encode("admin")).roles("USER", "ADMIN");*/
+//        //auth.authenticationProvider(usernamePasswordAuthenticationProvider())
+//                //.authenticationProvider(mobileCodeAuthenticationProvider());
 //    }
+
 
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -48,13 +54,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        /**
+         * 前后端分离时使用,禁用session
+         * 1、ALWAYS--没有session就创建2、IF_REQUIRED--如果需要就创建（默认）3、NEVER--有就使用，没有也不创建
+         * 4、STATELESS--不创建不使用session
+         */
+        //http.sessionManagement()
+                //.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //允许基于HttpServletRequest使用限制访问
         http.authorizeRequests()
                 .antMatchers("/static/**").permitAll() //静态资源不需要权限验证
                 .and()
                 .formLogin()
                 .loginPage("/login") //自定义登录页url,默认为/login
-                .loginProcessingUrl("/authorize") //执行登录认证逻辑路径
+//                .loginProcessingUrl("/authorize") //执行登录认证逻辑路径
                 .successForwardUrl("/index")
                 .failureUrl("/toLogin?error")
                 .permitAll()

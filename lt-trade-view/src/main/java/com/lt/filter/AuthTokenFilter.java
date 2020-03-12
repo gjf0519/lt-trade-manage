@@ -30,7 +30,7 @@ public class AuthTokenFilter extends GenericFilterBean {
         this.userService = userService;
     }
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws RuntimeException {
         try {
             HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
             String authToken = httpServletRequest.getHeader(XAUTH_TOKEN_HEADER_NAME);
