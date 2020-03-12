@@ -37,7 +37,9 @@ public class SysController {
      * @return
      */
     @PostMapping("authorize")
-    public Token authorize(@RequestParam String username, @RequestParam String password) {
+    public Token authorize(String username,String password) {
+        username = "glt";
+        password = "123456";
         // 1 创建UsernamePasswordAuthenticationToken
         UsernamePasswordAuthenticationToken token
                 = new UsernamePasswordAuthenticationToken(username, password);

@@ -64,6 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //允许基于HttpServletRequest使用限制访问
         http.authorizeRequests()
                 .antMatchers("/static/**").permitAll() //静态资源不需要权限验证
+                .antMatchers("/authorize").permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login") //自定义登录页url,默认为/login
