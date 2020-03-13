@@ -12,13 +12,29 @@ layui.use(['form','layer','jquery'],function(){
     //登录按钮
     form.on("submit(login)",function(data){
         var btn = $(this);
-        btn.text("登录中...").attr("disabled","disabled").addClass("layui-disabled");
-        $.post("/authorize"),data.field,function(rs){
+        btn.text("正在登录").attr("disabled","disabled").addClass("layui-disabled");
+        layer.msg(JSON.stringify(data.field))
+        // $.ajax({
+        //     url:"/authorize",
+        //     async: false,
+        //     type:"POST",
+        //     dataType: "text",
+        //     data:data.field,
+        //     success: function(data){
+        //         if($("#isphone").val()==0){
+        //             var index = parent.layer.getFrameIndex(window.name);
+        //             parent.layer.close(index);
+        //         }else {
+        //             window.history.go(-1);
+        //         }
+        //     }
+        // })
+        $.post("/authorize",data.field,function(result){
             btn.text("登录").attr("disabled",false).removeClass("layui-disabled");
-            if(rs.code != 200){
+            if(result.code != 200){
                 layer.msg(rs.msg);
             }
-        }
+        },"json");
         return false;
     })
 

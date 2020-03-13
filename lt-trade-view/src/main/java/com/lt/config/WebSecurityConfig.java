@@ -1,7 +1,9 @@
 package com.lt.config;
 
+import com.lt.filter.MobileCodeAuthenticationFilter;
+import com.lt.filter.MobileCodeAuthenticationProvider;
+import com.lt.filter.UsernamePasswordAuthenticationProvider;
 import com.lt.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,10 +11,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.annotation.Resource;
@@ -29,16 +29,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private UserService userService;
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        // 创建内存用户
-//        /*auth.inMemoryAuthentication()
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // 创建内存用户
+//        auth.inMemoryAuthentication()
 //                .withUser("user").password(passwordEncoder.encode("123")).roles("USER")
 //                .and()
-//                .withUser("admin").password(passwordEncoder.encode("admin")).roles("USER", "ADMIN");*/
-//        //auth.authenticationProvider(usernamePasswordAuthenticationProvider())
-//                //.authenticationProvider(mobileCodeAuthenticationProvider());
-//    }
+//                .withUser("admin").password(passwordEncoder.encode("admin")).roles("USER", "ADMIN");
+        auth.authenticationProvider(usernamePasswordAuthenticationProvider())
+                .authenticationProvider(mobileCodeAuthenticationProvider());
+    }
 
 
     @Bean
@@ -78,12 +78,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
         http.httpBasic();
         http.csrf().disable();
-        http.apply(securityConfigurerAdapter());
+        http.addFilterBefore(mobileCodeAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
-    private AuthTokenConfigurer securityConfigurerAdapter() {
-        return new AuthTokenConfigurer(userService);
+    @Bean
+    public MobileCodeAuthenticationFilter mobileCodeAuthenticationFilter() throws Exception {
+        MobileCodeAuthenticationFilter filter = new MobileCodeAuthenticationFilter();
+        filter.setAuthenticationManager(authenticationManagerBean());
+        return filter;
     }
+
+    @Bean
+    public UsernamePasswordAuthenticationProvider usernamePasswordAuthenticationProvider() {
+        return new UsernamePasswordAuthenticationProvider();
+    }
+
+    @Bean
+    public MobileCodeAuthenticationProvider mobileCodeAuthenticationProvider() {
+        return new MobileCodeAuthenticationProvider();
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 
     public static void main(String[] args) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
