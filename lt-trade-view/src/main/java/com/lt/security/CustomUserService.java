@@ -1,4 +1,4 @@
-package com.lt.service;
+package com.lt.security;
 
 import com.lt.entity.LtPermission;
 import com.lt.entity.LtRole;
@@ -12,7 +12,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +22,6 @@ import java.util.List;
  * @description
  * @date 2020/3/10
  */
-@Service
 public class CustomUserService implements UserDetailsService {
 
     @Autowired
