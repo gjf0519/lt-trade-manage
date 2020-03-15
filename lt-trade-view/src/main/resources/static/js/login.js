@@ -10,17 +10,27 @@ layui.use(['form','layer','jquery'],function(){
     })
 
     //登录按钮
-    form.on("submit(login)",function(data){
-        var btn = $(this);
-        btn.text("登录中...").attr("disabled","disabled").addClass("layui-disabled");
-        $.post("/authorize"),data.field,function(rs){
-            btn.text("登录").attr("disabled",false).removeClass("layui-disabled");
-            if(rs.code != 200){
-                layer.msg(rs.msg);
-            }
-        }
-        return false;
-    })
+    // form.on("submit(authorize)",function(data){
+    //     // var btn = $(this);
+    //     // btn.text("登录").attr("disabled","disabled").addClass("layui-disabled");
+    //     // $.post("/authorize",data.field,function(data){
+    //     //     btn.text("登录").attr("disabled",false).removeClass("layui-disabled");
+    //     //     alert(JSON.stringify(result));
+    //     // },"json");
+    //     $.ajax({
+    //         url: "/authorize",
+    //         type: "POST",
+    //         data: data.field,
+    //         xhrFields: {
+    //             withCredentials: true
+    //         },
+    //         crossDomain: true,
+    //         success: function (res) {
+    //             window.location.href = '/index';
+    //         }
+    //     });
+    //     return false;
+    // })
 
     //表单输入效果
     $(".loginBody .input-item").click(function(e){

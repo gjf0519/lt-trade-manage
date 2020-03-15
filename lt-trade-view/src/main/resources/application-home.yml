@@ -27,6 +27,7 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     log-prefix: mybatis-logs
+    map-underscore-to-camel-case: true
 
 management:
   endpoints:

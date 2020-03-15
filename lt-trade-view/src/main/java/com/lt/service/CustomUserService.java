@@ -1,0 +1,52 @@
+package com.lt.service;
+
+import com.lt.entity.LtPermission;
+import com.lt.entity.LtRole;
+import com.lt.entity.LtUser;
+import com.lt.mapper.PermissionMapper;
+import com.lt.mapper.RoleMapper;
+import com.lt.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * @author gaijf
+ * @description
+ * @date 2020/3/10
+ */
+@Service
+public class CustomUserService implements UserDetailsService {
+
+    @Autowired
+    UserMapper userMapper;
+    @Autowired
+    RoleMapper roleMapper;
+    @Autowired
+    PermissionMapper permissionMapper;
+
+    @Override
+    public UserDetails loadUserByUsername(String userName){
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        // 从数据库中取出用户信息
+        LtUser user = userMapper.loadUserByUsername(userName);
+        //查询用户角色
+        List<LtRole> userRoles = roleMapper.listByUserId(user.getId());
+        for (LtRole userRole : userRoles) {
+            //角色权限
+            List<LtPermission> permissions = permissionMapper.listByRoleId(userRole.getId());
+            for(LtPermission permission : permissions){
+                authorities.add(new SimpleGrantedAuthority(permission.getResource()));
+            }
+        }
+        return new User(user.getUserName(), user.getPassword(), authorities);
+    }
+}

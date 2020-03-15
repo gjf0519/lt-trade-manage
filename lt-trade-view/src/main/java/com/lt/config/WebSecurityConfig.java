@@ -1,21 +1,22 @@
 package com.lt.config;
 
-import com.lt.service.UserService;
+import com.lt.service.CustomUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import javax.annotation.Resource;
 
 /**
  * @author gaijf
@@ -25,25 +26,36 @@ import javax.annotation.Resource;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    CustomUserService customUserService;
 
-    @Resource
-    private UserService userService;
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.inMemoryAuthentication()
+//                .withUser("glt").roles("admin").password("$2a$10$peRXgcIZtRUmUxne/UNAs.z4hZyc8AYJlZP6ZDVNL1Jn7dpHQNLzC");
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(customUserService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        auth.authenticationProvider(authenticationProvider);
+    }
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        // 创建内存用户
-//        /*auth.inMemoryAuthentication()
-//                .withUser("user").password(passwordEncoder.encode("123")).roles("USER")
-//                .and()
-//                .withUser("admin").password(passwordEncoder.encode("admin")).roles("USER", "ADMIN");*/
-//        //auth.authenticationProvider(usernamePasswordAuthenticationProvider())
-//                //.authenticationProvider(mobileCodeAuthenticationProvider());
+
+//    @Bean
+//    public AuthenticationManager authenticationManagerBean() throws Exception {
+//        return super.authenticationManagerBean();
 //    }
 
+//    @Bean
+//    public UserDetailsService userDetailsService(){
+//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+//         manager.createUser(
+//                User.withUsername("glt").password("123").authorities("p1").build());
+//        return manager;
+//    }
 
     @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     /**
@@ -60,29 +72,34 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          * 4、STATELESS--不创建不使用session
          */
         //http.sessionManagement()
-                //.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                //.sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
         //允许基于HttpServletRequest使用限制访问
         http.authorizeRequests()
                 .antMatchers("/static/**").permitAll() //静态资源不需要权限验证
-                .antMatchers("/authorize").permitAll()
+//                .antMatchers("/authorize").permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login") //自定义登录页url,默认为/login
-//                .loginProcessingUrl("/authorize") //执行登录认证逻辑路径
-                .successForwardUrl("/index")
+                .loginProcessingUrl("/authorize") //执行登录认证逻辑路径
+                //定义登录时，用户名的 key，默认为 username
+                .usernameParameter("username")
+                //定义登录时，用户密码的 key，默认为 password
+                .passwordParameter("password")
+//                .successForwardUrl("/index")
+                .defaultSuccessUrl("/index")
                 .failureUrl("/toLogin?error")
                 .permitAll()
                 .and()
                 .authorizeRequests()
                 .anyRequest().authenticated();
         http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
+        http.cors();
         http.httpBasic();
         http.csrf().disable();
-        http.apply(securityConfigurerAdapter());
-    }
-
-    private AuthTokenConfigurer securityConfigurerAdapter() {
-        return new AuthTokenConfigurer(userService);
+        //添加认证过滤
+        //http.addFilterBefore(authenUserFilter(), UsernamePasswordAuthenticationFilter.class);
+        //添加权限不足及验证失败处理器
+        //http.exceptionHandling().authenticationEntryPoint(entryPointUnauthorizedHandler).accessDeniedHandler(restAccessDeniedHandler);
     }
 
     public static void main(String[] args) {
