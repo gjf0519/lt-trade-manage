@@ -1,21 +1,16 @@
 package com.lt.config;
 
-import com.lt.filter.MobileCodeAuthenticationFilter;
-import com.lt.filter.MobileCodeAuthenticationProvider;
-import com.lt.filter.UsernamePasswordAuthenticationProvider;
-import com.lt.service.UserService;
+import com.lt.security.CustomUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import javax.annotation.Resource;
 
 /**
  * @author gaijf
@@ -26,24 +21,28 @@ import javax.annotation.Resource;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Resource
-    private UserService userService;
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // 创建内存用户
-//        auth.inMemoryAuthentication()
-//                .withUser("user").password(passwordEncoder.encode("123")).roles("USER")
-//                .and()
-//                .withUser("admin").password(passwordEncoder.encode("admin")).roles("USER", "ADMIN");
-        auth.authenticationProvider(usernamePasswordAuthenticationProvider())
-                .authenticationProvider(mobileCodeAuthenticationProvider());
-    }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+//        authenticationProvider.setUserDetailsService(customUserService);
+//        authenticationProvider.setPasswordEncoder(passwordEncoder());
+//        auth.authenticationProvider(authenticationProvider);
+//    }
 
 
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(){
+        return new CustomUserService();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     /**
@@ -60,49 +59,35 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          * 4、STATELESS--不创建不使用session
          */
         //http.sessionManagement()
-                //.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                //.sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
         //允许基于HttpServletRequest使用限制访问
         http.authorizeRequests()
                 .antMatchers("/static/**").permitAll() //静态资源不需要权限验证
-                .antMatchers("/authorize").permitAll()
+//                .antMatchers("/authorize").permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login") //自定义登录页url,默认为/login
-//                .loginProcessingUrl("/authorize") //执行登录认证逻辑路径
-                .successForwardUrl("/index")
+                .loginProcessingUrl("/authorize") //执行登录认证逻辑路径
+                //定义登录时，用户名的 key，默认为 username
+                .usernameParameter("username")
+                //定义登录时，用户密码的 key，默认为 password
+                .passwordParameter("password")
+//                .successForwardUrl("/index")
+                .defaultSuccessUrl("/index")
                 .failureUrl("/toLogin?error")
                 .permitAll()
                 .and()
                 .authorizeRequests()
                 .anyRequest().authenticated();
         http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
+        http.cors();
         http.httpBasic();
         http.csrf().disable();
-        http.addFilterBefore(mobileCodeAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        //添加认证过滤
+        //http.addFilterBefore(authenUserFilter(), UsernamePasswordAuthenticationFilter.class);
+        //添加权限不足及验证失败处理器
+        //http.exceptionHandling().authenticationEntryPoint(entryPointUnauthorizedHandler).accessDeniedHandler(restAccessDeniedHandler);
     }
-
-    @Bean
-    public MobileCodeAuthenticationFilter mobileCodeAuthenticationFilter() throws Exception {
-        MobileCodeAuthenticationFilter filter = new MobileCodeAuthenticationFilter();
-        filter.setAuthenticationManager(authenticationManagerBean());
-        return filter;
-    }
-
-    @Bean
-    public UsernamePasswordAuthenticationProvider usernamePasswordAuthenticationProvider() {
-        return new UsernamePasswordAuthenticationProvider();
-    }
-
-    @Bean
-    public MobileCodeAuthenticationProvider mobileCodeAuthenticationProvider() {
-        return new MobileCodeAuthenticationProvider();
-    }
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
 
     public static void main(String[] args) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();

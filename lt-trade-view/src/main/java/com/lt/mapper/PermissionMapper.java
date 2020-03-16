@@ -2,6 +2,8 @@ package com.lt.mapper;
 
 import com.lt.entity.LtPermission;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -12,5 +14,6 @@ import java.util.List;
  */
 @Mapper
 public interface PermissionMapper {
-    List<LtPermission> listByRoleId(int id);
+    @Select({"select p.* from lt_permission p left join lt_role_permission r on r.permission_id = p.id where r.role_id = #{roleId}"})
+    List<LtPermission> listByRoleId(@Param("roleId") int id);
 }
