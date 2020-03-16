@@ -18,10 +18,10 @@ import java.util.Set;
 
 /**
  * @author gaijf
- * @description
+ * @description 用户名密码方式登录认证处理器
  * @date 2020/3/15
  */
-public class UsernamePasswordAuthenticationProvider implements AuthenticationProvider {
+public class UPAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private UserService userService;
 

@@ -17,16 +17,16 @@ import java.io.IOException;
  * @date 2020/3/16
  */
 @Slf4j
-public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+public class SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    public CustomAuthenticationSuccessHandler(){
+    public SuccessHandler(){
     }
 
-    public CustomAuthenticationSuccessHandler(String defaultSuccessUrl){
+    public SuccessHandler(String defaultSuccessUrl){
         super.setDefaultTargetUrl(defaultSuccessUrl);
     }
 
-    public CustomAuthenticationSuccessHandler(String defaultSuccessUrl,boolean alwaysUse){
+    public SuccessHandler(String defaultSuccessUrl, boolean alwaysUse){
         super.setDefaultTargetUrl(defaultSuccessUrl);
         super.setAlwaysUseDefaultTargetUrl(alwaysUse);
     }

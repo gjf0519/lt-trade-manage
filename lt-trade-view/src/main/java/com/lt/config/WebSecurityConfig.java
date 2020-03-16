@@ -1,15 +1,17 @@
 package com.lt.config;
 
-import com.lt.security.CustomUserService;
+import com.lt.security.FailureHandler;
+import com.lt.security.SuccessHandler;
+import com.lt.security.UPAuthenticationProvider;
+import com.lt.utils.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -21,14 +23,15 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-//        authenticationProvider.setUserDetailsService(customUserService);
-//        authenticationProvider.setPasswordEncoder(passwordEncoder());
-//        auth.authenticationProvider(authenticationProvider);
-//    }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth){
+        auth.authenticationProvider(upAuthenticationProvider());
+    }
 
+    @Bean
+    public UPAuthenticationProvider upAuthenticationProvider(){
+        return new UPAuthenticationProvider();
+    }
 
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -36,13 +39,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(){
-        return new CustomUserService();
+    public SuccessHandler successHandler(){
+        return new SuccessHandler(Constants.SUCCESS_URL);
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public FailureHandler failureHandler(){
+        return new FailureHandler(Constants.FAILURE_URL);
     }
 
     /**
@@ -63,18 +66,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //允许基于HttpServletRequest使用限制访问
         http.authorizeRequests()
                 .antMatchers("/static/**").permitAll() //静态资源不需要权限验证
-//                .antMatchers("/authorize").permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login") //自定义登录页url,默认为/login
                 .loginProcessingUrl("/authorize") //执行登录认证逻辑路径
-                //定义登录时，用户名的 key，默认为 username
-                .usernameParameter("username")
-                //定义登录时，用户密码的 key，默认为 password
-                .passwordParameter("password")
-//                .successForwardUrl("/index")
-                .defaultSuccessUrl("/index")
-                .failureUrl("/toLogin?error")
+                .defaultSuccessUrl(Constants.SUCCESS_URL)
+                .successHandler(successHandler())
+                .failureUrl(Constants.FAILURE_URL)
+                .failureHandler(failureHandler())
                 .permitAll()
                 .and()
                 .authorizeRequests()

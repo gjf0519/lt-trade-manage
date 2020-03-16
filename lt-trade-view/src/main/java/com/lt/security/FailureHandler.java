@@ -17,12 +17,12 @@ import java.io.IOException;
  * @date 2020/3/16
  */
 @Slf4j
-public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    public CustomAuthenticationFailureHandler(){
+    public FailureHandler(){
     }
 
-    public CustomAuthenticationFailureHandler(String defaultFailureUrl){
+    public FailureHandler(String defaultFailureUrl){
         super(defaultFailureUrl);
     }
 
