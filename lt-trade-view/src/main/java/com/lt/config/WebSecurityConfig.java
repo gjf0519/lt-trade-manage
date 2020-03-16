@@ -3,6 +3,7 @@ package com.lt.config;
 import com.lt.security.FailureHandler;
 import com.lt.security.SuccessHandler;
 import com.lt.security.UPAuthenticationProvider;
+import com.lt.security.VerifyFilter;
 import com.lt.utils.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -48,6 +50,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new FailureHandler(Constants.FAILURE_URL);
     }
 
+    @Bean
+    public VerifyFilter verifyFilter(){
+        return new VerifyFilter();
+    }
+
     /**
      * 认证模式配置 默认form+basic认证
      * 还有多种认证模式  openId、容器、管道等
@@ -62,10 +69,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          * 4、STATELESS--不创建不使用session
          */
         //http.sessionManagement()
+                //.maximumSessions(1) //控制单个用户仅仅能登录到你的程序一次
                 //.sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
         //允许基于HttpServletRequest使用限制访问
         http.authorizeRequests()
-                .antMatchers("/static/**").permitAll() //静态资源不需要权限验证
+                .antMatchers("/vCode").permitAll()
+                .antMatchers("/css/**","/images/**","/js/**","/json/**","/layui/**").permitAll() //静态资源不需要权限验证
                 .and()
                 .formLogin()
                 .loginPage("/login") //自定义登录页url,默认为/login
@@ -78,12 +87,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .anyRequest().authenticated();
-        http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
         http.cors();
         http.httpBasic();
         http.csrf().disable();
-        //添加认证过滤
-        //http.addFilterBefore(authenUserFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.headers().frameOptions().disable();//解决iframe无法加载问题
+        http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
+        //添加图片验证码过滤器
+        http.addFilterBefore(verifyFilter(), UsernamePasswordAuthenticationFilter.class);
         //添加权限不足及验证失败处理器
         //http.exceptionHandling().authenticationEntryPoint(entryPointUnauthorizedHandler).accessDeniedHandler(restAccessDeniedHandler);
     }

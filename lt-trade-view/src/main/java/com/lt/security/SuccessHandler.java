@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.lt.utils.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 import javax.servlet.ServletException;
@@ -39,7 +40,8 @@ public class SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandle
         //判断请求类型
         if (request.getContentType().indexOf(Constants.CONTENT_TYPE_REQUEST) > 0) {
             response.setContentType(Constants.CONTENT_TYPE_REQUEST_RESPONSE);
-            response.getWriter().write(JSON.toJSONString(""));
+            String user = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            response.getWriter().write(JSON.toJSONString(user));
             return;
         }
         super.onAuthenticationSuccess(request, response, authentication);

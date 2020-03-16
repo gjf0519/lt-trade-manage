@@ -49,3 +49,28 @@ layui.use(['form','layer','jquery'],function(){
         }
     })
 })
+
+function getVerifyCode() {
+    var url = "/vCode?" + Math.random();
+    $.ajax({
+        //请求方式
+        type : "GET",
+        //请求的媒体类型
+        contentType: "application/json;charset=UTF-8",
+        //请求地址
+        url : url,
+        //请求成功
+        success : function(result) {
+            console.log(result);
+            $("#vCode").attr("src","data:image/png;base64," + result.img);
+        },
+        //请求失败，包含具体的错误信息
+        error : function(e){
+            console.log(e.status);
+            console.log(e.responseText);
+        }
+    });
+}
+function mouseover(obj) {
+    obj.style.cursor = "pointer";
+}

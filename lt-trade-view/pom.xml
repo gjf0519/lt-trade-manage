@@ -59,5 +59,9 @@
             <version>2.1.0</version>
         </dependency>
         <!-- MySQL数据库-->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-core</artifactId>
+        </dependency>
     </dependencies>
 </project>

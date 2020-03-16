@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="loginHtml">
+<html class="loginHtml" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="utf-8">
 	<title>交易管理</title>
@@ -10,12 +10,12 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="format-detection" content="telephone=no">
 	<link rel="icon" href="favicon.ico">
-	<link rel="stylesheet" href="../static/layui/css/layui.css" media="all" />
-	<link rel="stylesheet" href="../static/css/public.css" media="all" />
+	<link rel="stylesheet" href="../layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="../css/public.css" media="all" />
 </head>
 <body class="loginBody">
 	<form class="layui-form" method="post" action="/authorize">
-		<div class="login_face"><img src="../static/images/face.jpg" class="userAvatar"></div>
+		<div class="login_face"><img src="../images/face.jpg" class="userAvatar"></div>
 		<div class="layui-form-item input-item">
 			<label for="username">用户名</label>
 			<input type="text" placeholder="请输入用户名" autocomplete="off" id="username" name="username" class="layui-input" lay-verify="required">
@@ -26,8 +26,9 @@
 		</div>
 		<div class="layui-form-item input-item" id="imgCode">
 			<label for="code">验证码</label>
-			<input type="text" placeholder="请输入验证码" autocomplete="off" id="code" class="layui-input">
-			<img src="../static/images/code.jpg">
+			<input type="text" placeholder="请输入验证码" autocomplete="off" id="code" name="verifyCode" class="layui-input">
+			<!--<input id="uuid" type="hidden" name="uuid" />-->
+			<img  id="vCode" title="看不清，请点我" onclick="getVerifyCode()" th:src="'data:image/png;base64,'+${imgUrl}" onmouseover="mouseover(this)" />
 		</div>
 		<div class="layui-form-item">
 			<!--<button class="layui-btn layui-block" lay-filter="authorize" lay-submit>登录</button>-->
@@ -39,8 +40,11 @@
 			<a href="javascript:;" class="seraph icon-sina layui-col-xs4 layui-col-sm4 layui-col-md4 layui-col-lg4"></a>
 		</div>
 	</form>
-	<script type="text/javascript" src="../static/layui/layui.js"></script>
-	<script type="text/javascript" src="../static/js/login.js"></script>
-	<script type="text/javascript" src="../static/js/cache.js"></script>
+	<script type="text/javascript" src="../layui/layui.js"></script>
+	<script type="text/javascript" src="../js/login.js"></script>
+	<script type="text/javascript" src="../js/cache.js"></script>
+<script>
+
+</script>
 </body>
 </html>
