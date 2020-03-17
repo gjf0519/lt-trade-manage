@@ -7,6 +7,5 @@ spring:
   profiles:
     active: home
 
-logging:
-  level:
-   root: debug
+#  level:
+#   root: debug

@@ -28,7 +28,7 @@ public class VerifyFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        // 拦截 /login的POST请求
+        // 拦截 /authorize的POST请求
         if(isProtectedUrl(request)) {
             String vCode = request.getParameter("verifyCode");// 图片验证码的 value
             if(!validateVerify(request, vCode)) {
@@ -51,7 +51,7 @@ public class VerifyFilter extends OncePerRequestFilter {
      */
     private boolean validateVerify(HttpServletRequest request, String vCode) {
         HttpSession session = request.getSession();
-        String verifyCode = session.getAttribute(Constants.SESSION_KEY).toString();
+        String verifyCode = session.getAttribute(Constants.SESSION_VCODE_KEY).toString();
         if (StringUtils.isBlank(verifyCode)) {
             //手动设置异常
             request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, new VerifyCodeException("验证码已过期"));
@@ -65,7 +65,7 @@ public class VerifyFilter extends OncePerRequestFilter {
         return true;
     }
 
-    // 拦截 /login的POST请求
+    // 拦截 /authorize的POST请求
     private boolean isProtectedUrl(HttpServletRequest request) {
         return "POST".equals(request.getMethod()) && pathMatcher.match("/authorize", request.getServletPath());
     }

@@ -32,6 +32,9 @@ public class UPAuthenticationProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
         // userDetails为数据库中查询到的用户信息
         UserDetails userDetails = userService.loadUserByUsername(username);
+        if(null == userDetails){
+            throw new BadCredentialsException("用户不存在");
+        }
         // 如果是自定义AuthenticationProvider，需要手动密码校验
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         if(!bCryptPasswordEncoder.matches(password, userDetails.getPassword())) {

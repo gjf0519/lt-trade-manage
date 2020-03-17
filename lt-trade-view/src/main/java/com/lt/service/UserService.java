@@ -52,6 +52,9 @@ public class UserService {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         // 从数据库中取出用户信息
         LtUser user = userMapper.loadUserByUsername(userName);
+        if(null == user){
+            return null;
+        }
         //查询用户角色
         List<LtRole> userRoles = roleMapper.listByUserId(user.getId());
         for (LtRole userRole : userRoles) {

@@ -8,6 +8,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
@@ -42,11 +43,24 @@ public class SystemController {
         // 生成随机字串
         String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
         // 将验证码上的文字保存在session中
-        session.setAttribute(Constants.SESSION_KEY, verifyCode);
+        session.setAttribute(Constants.SESSION_VCODE_KEY, verifyCode);
         String uuid = UUID.randomUUID().toString();
         ImgResult imgResult = generateImg(verifyCode,uuid);
         model.addAttribute(IMG_URL,imgResult.getImg());
         return "login";
+    }
+
+    @RequestMapping("/index")
+    public String index(HttpServletRequest request,Model model) throws IOException {
+        String username = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        HttpSession session = request.getSession();
+        session.setAttribute("username", username);
+        return "index";
+    }
+
+    @RequestMapping("main")
+    public String mainHtml(){
+        return "page/main";
     }
 
     /**
@@ -60,7 +74,7 @@ public class SystemController {
         String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
         String uuid = UUID.randomUUID().toString();
         // 将验证码上的文字保存在session中
-        session.setAttribute(Constants.SESSION_KEY, verifyCode);
+        session.setAttribute(Constants.SESSION_VCODE_KEY, verifyCode);
         return generateImg(verifyCode,uuid);
     }
 
@@ -109,10 +123,5 @@ public class SystemController {
             result.put("msg","登录失败");
         }
         return result;
-    }
-
-    @RequestMapping("main")
-    public String mainHtml(){
-        return "page/main";
     }
 }
