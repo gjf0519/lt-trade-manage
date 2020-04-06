@@ -7,6 +7,7 @@ import com.lt.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.text.SimpleDateFormat;
@@ -26,6 +27,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class RealFundDetailAll {
     @Autowired
     ThreadPoolExecutor threadPoolExecutor;
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
 
     @Scheduled(cron = "0 0 16 * * ? ")// 0/1 * * * * *
     public void execute() {
@@ -61,6 +64,11 @@ public class RealFundDetailAll {
             }
             FundEntity fundEntity = transformAllCapital(list,code);
             FileWriteUtil.writeTXT(FileWriteUtil.getTextPath(),"lt_fund_detail_all",JSON.toJSONString(fundEntity));
+            try{
+                redisTemplate.opsForList().rightPushAll("lt_fund_detail_all",JSON.toJSONString(fundEntity));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
         log.info("===============当天交易明细数据获取任务结束===========");
     }

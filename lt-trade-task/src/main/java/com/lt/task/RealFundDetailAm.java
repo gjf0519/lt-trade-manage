@@ -63,8 +63,12 @@ public class RealFundDetailAm {
                 continue;
             }
             FundEntity fundEntity = transformAmCapital(list,code);
-            redisTemplate.opsForList().rightPushAll("lt_fund_detail_am",JSON.toJSONString(fundEntity));
             FileWriteUtil.writeTXT(FileWriteUtil.getTextPath(),"lt_fund_detail_am",JSON.toJSONString(fundEntity));
+            try{
+                redisTemplate.opsForList().rightPushAll("lt_fund_detail_am",JSON.toJSONString(fundEntity));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
         log.info("=============================上午资金指标收集完成========================");
     }

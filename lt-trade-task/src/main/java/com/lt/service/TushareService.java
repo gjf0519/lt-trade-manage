@@ -6,6 +6,8 @@ import com.lt.utils.FileWriteUtil;
 import com.lt.utils.RestTemplateUtil;
 import com.lt.utils.TimeUtil;
 import com.lt.utils.TushareUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,6 +23,9 @@ import java.util.Map;
  */
 @Service
 public class TushareService {
+
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
 
     /**
      *每日指标
@@ -60,6 +65,11 @@ public class TushareService {
         }
         for(Map<String,Object> var : results){
             FileWriteUtil.writeTXT(FileWriteUtil.getTextPath(),"lt_daily_basic",JSON.toJSONString(var));
+            try{
+                redisTemplate.opsForList().rightPushAll("lt_daily_basic",JSON.toJSONString(var));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 

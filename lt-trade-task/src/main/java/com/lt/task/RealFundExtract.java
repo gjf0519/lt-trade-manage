@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StringUtils;
@@ -40,6 +41,8 @@ public class RealFundExtract {
     RestTemplate restTemplate;
     @Autowired
     ThreadPoolExecutor threadPoolExecutor;
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
 
     @Scheduled(cron = "0 40 11 * * ? ")// 0/1 * * * * *
     public void execute() {
@@ -96,6 +99,11 @@ public class RealFundExtract {
                             .createTime(LocalDate.now().toString())
                             .build();
                     FileWriteUtil.writeTXT(FileWriteUtil.getTextPath(),"lt_fund_real", JSON.toJSONString(fundEntity));
+                    try{
+                        redisTemplate.opsForList().rightPushAll("lt_fund_real",JSON.toJSONString(fundEntity));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
             } catch (Exception e){
                 log.info("实时资金数据获取异常",e);
