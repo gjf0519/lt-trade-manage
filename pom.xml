@@ -9,6 +9,7 @@
     <modules>
         <module>lt-trade-common</module>
         <module>lt-trade-view</module>
+        <module>lt-trade-task</module>
         <module>lt-trade-tushare</module>
         <module>lt-trade-gateway</module>
         <module>lt-trade-tencent</module>
@@ -29,6 +30,7 @@
     <properties>
         <java.version>1.8</java.version>
         <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
@@ -78,13 +80,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 </project>

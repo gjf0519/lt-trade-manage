@@ -1,0 +1,41 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lt.mapper.FundMapper">
+
+    <select id="getFundCount" resultType="int">
+        select
+          count(1)
+        from lt_fund_detail f
+
+    </select>
+
+    <select id="getFundList" resultType="com.lt.entity.FundEntity">
+		select
+            f.id,
+            f.stock_code,
+            f.makers_fund_in,
+            f.makers_fund_out,
+            f.makers_in_flow,
+            f.retail_funt_in,
+            f.retail_funt_out,
+            f.retail_in_flow,
+            f.amounts,
+            f.redo_minute_pct,
+            f.redo_all_pct
+        from lt_fund_detail f
+        <if test ="pageParams.offset !=null and pageParams.limit != null">
+            limit #{pageParams.offset},#{pageParams.limit}
+        </if>
+	</select>
+
+    <insert id="saveDailyBasic" parameterType="java.util.List">
+        insert into lt_daily_basic (ts_code,trade_date,close,turnover_rate,turnover_rate_f,volume_ratio
+        ,ps,ps_ttm,total_share,float_share,free_share,total_mv,circ_mv,pct_chg,amount) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.ts_code},#{item.trade_date},#{item.close},#{item.turnover_rate},#{item.turnover_rate_f},#{item.volume_ratio},#{item.ps},
+            #{item.ps_ttm},#{item.total_share},#{item.float_share},#{item.free_share},#{item.total_mv},#{item.circ_mv}
+            ,#{item.pct_chg},#{item.amount})
+        </foreach>
+    </insert>
+</mapper>

@@ -29,6 +29,19 @@ public class BigDecimalUtil {
     /**
      * 提供精确的加法运算。
      *
+     * @param v1      被加数
+     * @param v2     加数
+     * @return 两个参数的和
+     */
+    public static double add(double v1, double v2,int scale) {
+        BigDecimal b1 = new BigDecimal(String.valueOf(v1));
+        BigDecimal b2 = new BigDecimal(String.valueOf(v2));
+        return b1.add(b2).setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+
+    /**
+     * 提供精确的加法运算。
+     *
      * @param v1     被加数
      * @param v2      加数
      * @return 两个参数的和
@@ -235,6 +248,27 @@ public class BigDecimalUtil {
         BigDecimal b1 = new BigDecimal(String.valueOf(v1));
         BigDecimal b2 = new BigDecimal(String.valueOf(v2));
         return b1.divide(b2,scale, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+
+    /**
+     * 提供（相对）精确的除法运算。当发生除不尽的情况时，由scale参数指 定精度，以后的数字四舍五入。
+     *
+     * @param v1
+     *            被除数
+     * @param v2
+     *            除数
+     * @param scale
+     *            表示需要精确到小数点以后几位。
+     * @return 两个参数的商
+     */
+    public static String divToStr(double v1, double v2, int scale) {
+        if (scale < 0) {
+            throw new IllegalArgumentException(
+                    "The scale must be a positive integer or zero");
+        }
+        BigDecimal b1 = new BigDecimal(String.valueOf(v1));
+        BigDecimal b2 = new BigDecimal(String.valueOf(v2));
+        return b1.divide(b2,scale, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP).toString();
     }
 
     /**

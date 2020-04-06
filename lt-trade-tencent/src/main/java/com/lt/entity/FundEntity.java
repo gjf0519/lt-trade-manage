@@ -31,9 +31,17 @@ public class FundEntity {
     private double retailInFlow;
     //交易总金额
     private double amounts;
-    //成交订单重复占比
+    //成交订单每分钟重复占比
     private String redoMinutePct;
-    //成交订单重复占比
+    //成交订单上午重复占比
+    private double repetitionAmPct;
+    //成交订单当天重复占比
     private double redoAllPct;
+    //成交数量
+    private int dealNum;
+    //大单数量占比
+    private String  largeOrder;
+    //每分钟价格变动
+    private String clinchChangeMinute;
     private String createTime;
 }

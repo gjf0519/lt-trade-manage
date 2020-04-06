@@ -1,0 +1,12 @@
+server:
+  port: 6070
+
+spring:
+  application:
+    name: lt-trade-task
+  main:
+    allow-bean-definition-overriding: true
+
+logging:
+  level:
+    boot: debug

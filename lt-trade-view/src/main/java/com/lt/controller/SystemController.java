@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -51,7 +50,7 @@ public class SystemController {
     }
 
     @RequestMapping("/index")
-    public String index(HttpServletRequest request,Model model) throws IOException {
+    public String index(HttpServletRequest request) throws IOException {
         String username = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         HttpSession session = request.getSession();
         session.setAttribute("username", username);
@@ -60,7 +59,7 @@ public class SystemController {
 
     @RequestMapping("main")
     public String mainHtml(){
-        return "page/main";
+        return "main";
     }
 
     /**

@@ -29,10 +29,10 @@ public class MenuTest {
         nodes.add(new Node("7","f",1,"3"));
         nodes.add(new Node("8","g",1,"7"));
         nodes.add(new Node("9","h",1,null));
-//        System.out.println("result:" + JSON.toJSONString(getTree("0",nodes)));
-        System.out.println("result:" + JSON.toJSONString(parseTree(nodes)));
-
-        System.out.println("child:"+JSON.toJSONString(getValues ("7",nodes)));
+        System.out.println("result:" + JSON.toJSONString(getTree("0",nodes)));
+//        System.out.println("result:" + JSON.toJSONString(parseTree(nodes)));
+//
+//        System.out.println("child:"+JSON.toJSONString(getValues ("7",nodes)));
     }
 
     /**

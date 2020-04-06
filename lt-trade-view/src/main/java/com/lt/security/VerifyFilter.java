@@ -57,7 +57,8 @@ public class VerifyFilter extends OncePerRequestFilter {
             request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, new VerifyCodeException("验证码已过期"));
             return false;
         }
-        if (StringUtils.isBlank(vCode) || !vCode.equalsIgnoreCase(verifyCode)) {
+        if (StringUtils.isBlank(vCode) ||
+                !vCode.toLowerCase().equalsIgnoreCase(verifyCode.toLowerCase())) {
             request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, new VerifyCodeException("验证码错误"));
             return false;
         }

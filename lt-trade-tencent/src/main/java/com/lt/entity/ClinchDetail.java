@@ -34,5 +34,5 @@ public class ClinchDetail implements Serializable {
     @Excel(name = "成交额（元）")
     private Double clinchSum;
     @Excel(name = "性质", replace = { "卖盘_0", "买盘_1","中性盘_2" })
-    private Integer clinchNature;
+    private String clinchNature;
 }

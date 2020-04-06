@@ -7,6 +7,7 @@ function dateFilter(date){
     return date;
 }
 function getLangDate(){
+    var usrname = document.getElementById("username").value;
     var dateObj = new Date(); //表示当前系统时间的Date对象
     var year = dateObj.getFullYear(); //当前系统时间的完整年份值
     var month = dateObj.getMonth()+1; //当前系统时间的月份值
@@ -19,7 +20,7 @@ function getLangDate(){
     var second = dateObj.getSeconds(); //当前系统时间的秒钟值
     var timeValue = "" +((hour >= 12) ? (hour >= 18) ? "晚上" : "下午" : "上午" ); //当前时间属于上午、晚上还是下午
     newDate = dateFilter(year)+"年"+dateFilter(month)+"月"+dateFilter(date)+"日 "+" "+dateFilter(hour)+":"+dateFilter(minute)+":"+dateFilter(second);
-    document.getElementById("nowTime").innerHTML = "亲爱的管理员，"+timeValue+"好！ 欢迎使用交易管理系统。当前时间为： "+newDate+"　"+week;
+    document.getElementById("nowTime").innerHTML = "亲爱的"+usrname+"，"+timeValue+"好！ 欢迎使用交易管理系统。当前时间为： "+newDate+"　"+week;
     setTimeout("getLangDate()",1000);
 }
 
@@ -30,11 +31,6 @@ layui.use(['form','element','layer','jquery'],function(){
         $ = layui.jquery;
     //上次登录时间【此处应该从接口获取，实际使用中请自行更换】
     $(".loginTime").html(newDate.split("日")[0]+"日</br>"+newDate.split("日")[1]);
-
-    //用户数量
-    $.get("../json/userList.json",function(data){
-        $(".userAll span").text(data.count);
-    })
 
     //外部图标
     $.get(iconUrl,function(data){

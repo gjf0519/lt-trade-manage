@@ -489,9 +489,24 @@ public class TimeUtil {
         return date;
     }
 
-    public static Date StringToDate(String str,String format) throws ParseException{
+    public static Date StringToDate(String str,String format){
         SimpleDateFormat formatter = new SimpleDateFormat(format);
-        Date date = (Date) formatter.parse(str);
+        Date date = null;
+        try {
+            date = (Date) formatter.parse(str);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public static Date StringToDate(String str,SimpleDateFormat formatter){
+        Date date = null;
+        try {
+            date = (Date) formatter.parse(str);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return date;
     }
 
