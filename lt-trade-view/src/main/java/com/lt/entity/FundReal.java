@@ -39,5 +39,7 @@ public class FundReal {
     private double openPrice;
     //每分钟价格变动
     private String clinchChangeMinute;
+    //成交资金占流动资金的比重
+    private double circMvRideo;
     private String createTime;
 }

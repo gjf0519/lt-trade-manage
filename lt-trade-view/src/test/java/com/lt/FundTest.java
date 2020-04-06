@@ -46,9 +46,9 @@ public class FundTest {
         List<FundReal> fundReals = fundService.selectByTarget(createTime,lastDate);
         List<Similarity> resultAll = new ArrayList<>();
         for(FundReal real : fundReals){
-            if(!real.getStockCode().equals("sh603555")){
-                continue;
-            }
+//            if(!real.getStockCode().equals("sh603555")){
+//                continue;
+//            }
             String clinch_change_minute = real.getClinchChangeMinute();
             List<RealMinute> list = JSONArray.parseArray(clinch_change_minute,RealMinute.class);
             list = list.stream().sorted(Comparator.comparing(RealMinute::getReaTime)).collect(Collectors.toList());
@@ -58,10 +58,6 @@ public class FundTest {
                 if(TimeUtil.StringToDate(item.getReaTime(),"HH:mm").before(date)
                     && TimeUtil.StringToDate(item.getReaTime(),"HH:mm").after(afterDate)){
                     price = BigDecimalUtil.add(price,item.getClinchChangeMinute(),4);
-                    System.out.println(item.getReaTime()+"=========="+price);
-                    if(item.getReaTime().equals("11:12")){
-                        System.out.println(BigDecimalUtil.div(price,real.getOpenPrice(),4));
-                    }
                     double chg = BigDecimalUtil.sub(BigDecimalUtil.div(price,real.getOpenPrice(),4),1,4);
                     if(chg > 0.02){
                         map = null;
@@ -110,9 +106,9 @@ public class FundTest {
             resultAll.add(similarity);
         }
 
-        List<Similarity> resultAll1 = resultAll.stream().sorted(Comparator.comparing(Similarity::getSimilarityRido)).collect(Collectors.toList());
+        List<Similarity> resultAll1 = resultAll.stream().sorted(Comparator.comparing(Similarity::getSimilarityRido).reversed()).collect(Collectors.toList());
         for(int i =0;i < resultAll1.size();i++){
-            System.out.println(JSON.toJSONString(resultAll1.get(i)));
+            System.out.println(JSON.toJSONString(resultAll1.get(i))+"======"+i);
         }
         System.out.println(resultAll1.size()+"================");
     }

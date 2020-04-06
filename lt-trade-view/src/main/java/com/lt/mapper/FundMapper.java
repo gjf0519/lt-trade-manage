@@ -46,17 +46,17 @@ public interface FundMapper {
     List<DailyBasicVo> queryByStockCode(@Param("code") String code, @Param("tradeDate") String tradeDate);
 
     @Select({"SELECT r.* from (  " +
-            "  SELECT m.*,c.pct_chg dpct_chg,c.circ_mv,c.five_pct_chg FROM (  " +
+            "  SELECT m.*,c.pct_chg dpct_chg,c.circ_mv,c.five_pct_chg,(m.amounts/c.circ_mv) circ_mv_rideo FROM (  " +
             "    SELECT u.* from (  " +
             "      SELECT t.stock_code,t.pct_chg,(t.makers_in_flow+t.retail_in_flow) flow,t.create_time,t.exchange,  " +
-            "        t.open_price,f.repetition_am_pct,f.five_volume_ratio,f.clinch_change_minute from lt_fund_real t  " +
+            "        t.open_price,f.repetition_am_pct,f.five_volume_ratio,f.clinch_change_minute,t.amounts from lt_fund_real t  " +
             "        left JOIN lt_fund_detail f on f.stock_code = t.stock_code and f.create_time = #{date}  " +
             "          " +
             "    ) u where u.flow >= -0.01 and u.flow <= 0.00 and u.pct_chg < 2 and u.pct_chg > -3   " +
             "      and u.exchange > 0.1 AND u.exchange < 3 and u.repetition_am_pct >= 0.68  and u.five_volume_ratio > 1 and u.create_time = #{date} ) m  " +
             "  LEFT  JOIN  " +
             "   lt_daily_basic c ON c.ts_code = m.stock_code AND c.trade_date = #{lastDate}  " +
-            ") r where r.dpct_chg < 2 and r.five_pct_chg <= 0.0 and r.circ_mv < 2000000.0000 ORDER BY r.circ_mv"})
+            ") r where r.dpct_chg < 2 and r.five_pct_chg <= 0.0 and r.circ_mv < 2000000.0000 and r.circ_mv_rideo > 0.002 ORDER BY r.circ_mv"})
     List<FundReal> selectByTarget(@Param("date") String date,@Param("lastDate") String lastDate);
 
     @Update({"update lt_daily_basic set five_pct_chg=#{five_pct_chg} where ts_code=#{code} and trade_date=#{tradeDate}"})
