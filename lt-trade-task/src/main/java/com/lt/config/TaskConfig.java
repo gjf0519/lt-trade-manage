@@ -38,16 +38,6 @@ public class TaskConfig implements SchedulingConfigurer {
     }
 
     /**
-     * 成交明细
-     * @return
-     */
-//    @Bean
-//    public ClinchExtract clinchExtract(){
-//        ClinchExtract clinchExtract = new ClinchExtract();
-//        return clinchExtract;
-//    }
-
-    /**
      * 上午成交明细
      * @return
      */

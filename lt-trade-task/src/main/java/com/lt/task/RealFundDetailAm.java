@@ -4,11 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.lt.entity.ClinchDetail;
 import com.lt.entity.FundEntity;
 import com.lt.utils.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.text.SimpleDateFormat;
@@ -23,6 +26,9 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class RealFundDetailAm {
+
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
 
     @Scheduled(cron = "0 40 11 * * ? ")// 0/1 * * * * *
     public void execute() {
@@ -57,6 +63,7 @@ public class RealFundDetailAm {
                 continue;
             }
             FundEntity fundEntity = transformAmCapital(list,code);
+            redisTemplate.opsForList().rightPushAll("lt_fund_detail_am",JSON.toJSONString(fundEntity));
             FileWriteUtil.writeTXT(FileWriteUtil.getTextPath(),"lt_fund_detail_am",JSON.toJSONString(fundEntity));
         }
         log.info("=============================上午资金指标收集完成========================");
@@ -109,6 +116,7 @@ public class RealFundDetailAm {
     @Data
     @Builder
     @NoArgsConstructor
+    @AllArgsConstructor
     static class RealMinute {
         private String reaTime;
         private double clinchChangeMinute;
