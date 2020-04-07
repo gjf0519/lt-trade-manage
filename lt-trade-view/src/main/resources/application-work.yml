@@ -16,6 +16,18 @@ spring:
         login-password: gailt
   main:
     allow-bean-definition-overriding: true
+  redis:
+      host: 212.64.69.77
+      port: 6379
+      password: gjf*#123
+      jedis:
+        pool:
+          max-active: 8
+          max-wait: -1
+          max-idle: 500
+          min-idle: 0
+        lettuce:
+          shutdown-timeout: 0
   thymeleaf:
     cache: false
     encoding: UTF-8

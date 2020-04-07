@@ -26,6 +26,16 @@ public class TimeUtil {
         return cal.getTime();
     }
 
+    public static String getaLimitTime(String time,int minute){
+        Date date=TimeUtil.StringToDate(time,"HH:mm");
+        Calendar cal=Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.MINUTE, minute);
+        Date beforeD = cal.getTime();
+        String nextTime = new SimpleDateFormat("HH:mm").format(beforeD);
+        return nextTime;
+    }
+
 
     /**
      * 获取当天结束时间

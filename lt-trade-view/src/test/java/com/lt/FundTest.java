@@ -142,7 +142,7 @@ public class FundTest {
         Date date=TimeUtil.StringToDate(time,"HH:mm");
         Calendar cal=Calendar.getInstance();
         cal.setTime(date);
-        cal.add(Calendar.MINUTE, -1);// 获取下一分钟时间
+        cal.add(Calendar.MINUTE, -1);//获取上一分钟
         Date beforeD = cal.getTime();
         String nextTime = new SimpleDateFormat("HH:mm").format(beforeD);
         return nextTime;

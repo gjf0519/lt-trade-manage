@@ -69,8 +69,9 @@ public class RealFundExtract {
                 }
                 codes = codes.replaceAll(prefix,"");
                 ResponseEntity<String> change = restTemplate.getForEntity("http://qt.gtimg.cn/q="+codes,String.class);
+                //实时交易信息
                 Map<String,RealMarket> pctChgs = resultSplit(change.getBody());
-
+                //实时资金流向
                 StringTokenizer token = new StringTokenizer(entity.getBody(),";");
                 while(token.hasMoreTokens()){
                     String result = token.nextToken();
@@ -124,13 +125,10 @@ public class RealFundExtract {
                 String[] values = result.split("~");
                 if(values.length < 38)
                     continue;
-                String chg = StringUtils.isEmpty(values[32]) ? "0":values[32];
-                String exchange = StringUtils.isEmpty(values[38]) ? "0":values[38];
-                String openPrice = StringUtils.isEmpty(values[5]) ? "0":values[5];
                 RealMarket realMarket = RealMarket.builder()
-                        .openPrice(Double.valueOf(openPrice))
-                        .pctChg(Double.valueOf(chg))
-                        .exchange(Double.valueOf(exchange))
+                        .openPrice(Double.valueOf(values[5]))
+                        .pctChg(Double.valueOf(values[32]))
+                        .exchange(Double.valueOf(values[38]))
                         .build();
                 map.put(values[2],realMarket);
             }
@@ -140,7 +138,7 @@ public class RealFundExtract {
 
     @Data
     @Builder
-    static class RealMarket {
+    class RealMarket {
         private double pctChg;
         private double exchange;
         private double openPrice;

@@ -38,9 +38,9 @@ public class ParseZip {
 
     @Test
     void savePmZip(){
-//        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-//        String dateString = formatter.format(new Date());
-        String dateString = "20200403";
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        String dateString = formatter.format(new Date());
+//        String dateString = "20200403";
         saveFundDetailAllZip(dateString);
         saveDailyZip(dateString);
     }
