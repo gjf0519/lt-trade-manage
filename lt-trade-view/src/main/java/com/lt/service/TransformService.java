@@ -44,7 +44,6 @@ public class TransformService {
     public void saveAmData(){
         this.saveFundRealAm();
         this.saveFundDetailAm();
-        this.calculateFivePctChg();
         this.calculateFiveVolumeRatio();
     }
 
@@ -130,6 +129,7 @@ public class TransformService {
     public void savePmData(){
         this.saveDailyBasic();
         this.saveFundDetailPm();
+        this.calculateFivePctChg();
     }
 
     /**
@@ -160,9 +160,8 @@ public class TransformService {
      * 股票过滤
      * @return
      */
-    List<String> filterStockCodes(){
+    public List<String> filterStockCodes(){
         Date afterDate = TimeUtil.StringToDate("09:29","HH:mm");
-        Date date = TimeUtil.StringToDate("11:30","HH:mm");
         String createTime = LocalDate.now().toString();
         String lastDate = "2020-04-03";
         List<FundReal> fundReals = fundService.selectByTarget(createTime,lastDate);
@@ -177,10 +176,10 @@ public class TransformService {
                 if(TimeUtil.StringToDate(item.getReaTime(),"HH:mm").after(afterDate)){
                     price = BigDecimalUtil.add(price,item.getClinchChangeMinute(),4);
                     double chg = BigDecimalUtil.sub(BigDecimalUtil.div(price,real.getOpenPrice(),4),1,4);
-                    if(chg > 0.02){
-                        realityMap = null;
-                        break;
-                    }
+//                    if(chg > 0.02){
+//                        realityMap = null;
+//                        break;
+//                    }
                     item.setPriceChg(chg);
                     realityMap.put(item.getReaTime(),chg);
                 }
@@ -256,39 +255,19 @@ public class TransformService {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    class Similarity {
+    static class Similarity {
         private String code;
         private double similarityRido;
         private int similaritySize;
     }
 
-    class RealMinute {
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static class RealMinute {
         private String reaTime;
         private double clinchChangeMinute;
         private double priceChg;
-
-        public String getReaTime() {
-            return reaTime;
-        }
-
-        public void setReaTime(String reaTime) {
-            this.reaTime = reaTime;
-        }
-
-        public double getClinchChangeMinute() {
-            return clinchChangeMinute;
-        }
-
-        public void setClinchChangeMinute(double clinchChangeMinute) {
-            this.clinchChangeMinute = clinchChangeMinute;
-        }
-
-        public double getPriceChg() {
-            return priceChg;
-        }
-
-        public void setPriceChg(double priceChg) {
-            this.priceChg = priceChg;
-        }
     }
 }

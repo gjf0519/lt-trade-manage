@@ -24,7 +24,13 @@ public class TransformServiceTest {
         transformService.saveAmData();
     }
 
-    public void saveFundRealAm(){
-        transformService.saveFundRealAm();
+    @Test
+    public void savePmData(){
+        transformService.savePmData();
+    }
+
+    @Test
+    public void filterStockCodes(){
+        transformService.filterStockCodes();
     }
 }

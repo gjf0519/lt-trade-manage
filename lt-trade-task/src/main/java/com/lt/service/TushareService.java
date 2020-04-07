@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author gaijf
@@ -64,13 +65,9 @@ public class TushareService {
             }
         }
         for(Map<String,Object> var : results){
-            FileWriteUtil.writeTXT(FileWriteUtil.getTextPath(),"lt_daily_basic",JSON.toJSONString(var));
-            try{
-                redisTemplate.opsForList().rightPushAll("lt_daily_basic",JSON.toJSONString(var));
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+            redisTemplate.opsForList().rightPushAll("lt_daily_basic",JSON.toJSONString(var));
         }
+        redisTemplate.expire("lt_daily_basic", 20 * 60 * 60, TimeUnit.SECONDS);
     }
 
     /**

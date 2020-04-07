@@ -20,7 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author gaijf
@@ -47,18 +49,29 @@ public class RealFundExtract {
     @Scheduled(cron = "0 40 11 * * ? ")// 0/1 * * * * *
     public void execute() {
         List<String> codes = RealCodeUtil.getCodesStr(splitSize,Constants.STOCK_CODE,prefix);
+        CountDownLatch latch = new CountDownLatch(codes.size());
         for (int i = 0; i < codes.size(); i++) {
-            threadPoolExecutor.execute(new RealThread(codes.get(i)));
+            threadPoolExecutor.execute(new RealThread(codes.get(i),latch));
         }
-        long count = threadPoolExecutor.getTaskCount()-threadPoolExecutor.getCompletedTaskCount();
-        System.out.println("RealFundExtract:总数:"+threadPoolExecutor.getTaskCount()+"完成:"+
-                threadPoolExecutor.getCompletedTaskCount()+"等待:"+count+"线程数量:"+threadPoolExecutor.getPoolSize());
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            log.info("=============================实时资金流向定时任务收集异常========================");
+            e.printStackTrace();
+        }
+        redisTemplate.expire("lt_fund_real", 20 * 60 * 60, TimeUnit.SECONDS);
+        log.info("=============================实时资金流向定时任务收集完成========================");
+//        long count = threadPoolExecutor.getTaskCount()-threadPoolExecutor.getCompletedTaskCount();
+//        System.out.println("RealFundExtract:总数:"+threadPoolExecutor.getTaskCount()+"完成:"+
+//                threadPoolExecutor.getCompletedTaskCount()+"等待:"+count+"线程数量:"+threadPoolExecutor.getPoolSize());
     }
 
     private class RealThread implements Runnable {
         private String codes;
-        public RealThread(String codes){
+        private CountDownLatch latch;
+        public RealThread(String codes,CountDownLatch latch){
             this.codes = codes;
+            this.latch = latch;
         }
         @Override
         public void run() {
@@ -99,16 +112,12 @@ public class RealFundExtract {
                             .exchange(realMarket.getExchange())
                             .createTime(LocalDate.now().toString())
                             .build();
-                    FileWriteUtil.writeTXT(FileWriteUtil.getTextPath(),"lt_fund_real", JSON.toJSONString(fundEntity));
-                    try{
-                        redisTemplate.opsForList().rightPushAll("lt_fund_real",JSON.toJSONString(fundEntity));
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
+                    redisTemplate.opsForList().rightPushAll("lt_fund_real",JSON.toJSONString(fundEntity));
                 }
             } catch (Exception e){
                 log.info("实时资金数据获取异常",e);
             }
+            latch.countDown();
         }
 
         /**
