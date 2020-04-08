@@ -1,7 +1,6 @@
 package com.lt.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.lt.entity.FundDetail;
 import com.lt.entity.FundEntity;
 import com.lt.entity.FundReal;
@@ -168,26 +167,7 @@ public class TransformService {
         List<Similarity> resultAll = new ArrayList<>();
         for(FundReal real : fundReals){
             String clinch_change_minute = real.getClinchChangeMinute();
-            List<RealMinute> list = JSONArray.parseArray(clinch_change_minute,RealMinute.class);
-            list = list.stream().sorted(Comparator.comparing(RealMinute::getReaTime)).collect(Collectors.toList());
-            double price = real.getOpenPrice();
-            Map<String,Double> realityMap = new HashMap();
-            for(RealMinute item : list){
-                if(TimeUtil.StringToDate(item.getReaTime(),"HH:mm").after(afterDate)){
-                    price = BigDecimalUtil.add(price,item.getClinchChangeMinute(),4);
-                    double chg = BigDecimalUtil.sub(BigDecimalUtil.div(price,real.getOpenPrice(),4),1,4);
-//                    if(chg > 0.02){
-//                        realityMap = null;
-//                        break;
-//                    }
-                    item.setPriceChg(chg);
-                    realityMap.put(item.getReaTime(),chg);
-                }
-            }
-
-            if(realityMap == null){
-                continue;
-            }
+            Map<String,Double> realityMap = (Map<String, Double>) JSON.parse(clinch_change_minute);
 
             List<Double> chgList = replenishTime(realityMap);
 
@@ -195,7 +175,7 @@ public class TransformService {
             Similarity similarity = Similarity.builder()
                     .code(real.getStockCode())
                     .similarityRido(similarityRido)
-                    .similaritySize(list.size())
+                    .similaritySize(realityMap.size())
                     .build();
             resultAll.add(similarity);
         }
@@ -259,15 +239,5 @@ public class TransformService {
         private String code;
         private double similarityRido;
         private int similaritySize;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    static class RealMinute {
-        private String reaTime;
-        private double clinchChangeMinute;
-        private double priceChg;
     }
 }

@@ -46,7 +46,7 @@ public class RealFundExtract {
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
 
-    @Scheduled(cron = "0 40 11 * * ? ")// 0/1 * * * * *
+    @Scheduled(cron = "0 35 11 * * ? ")// 0/1 * * * * *
     public void execute() {
         List<String> codes = RealCodeUtil.getCodesStr(splitSize,Constants.STOCK_CODE,prefix);
         CountDownLatch latch = new CountDownLatch(codes.size());
@@ -83,7 +83,7 @@ public class RealFundExtract {
                 codes = codes.replaceAll(prefix,"");
                 ResponseEntity<String> change = restTemplate.getForEntity("http://qt.gtimg.cn/q="+codes,String.class);
                 //实时交易信息
-                Map<String,RealMarket> pctChgs = resultSplit(change.getBody());
+                Map<String,Double[]> pctChgs = resultSplit(change.getBody());
                 //实时资金流向
                 StringTokenizer token = new StringTokenizer(entity.getBody(),";");
                 while(token.hasMoreTokens()){
@@ -96,11 +96,11 @@ public class RealFundExtract {
                     String code = values[0].split("=")[1];
                     code = code.substring(1,code.length());
                     String pctCode = code.substring(2,code.length());
-                    RealMarket realMarket = pctChgs.get(pctCode);
+                    Double [] realMarket = pctChgs.get(pctCode);
                     double amount = Double.valueOf(values[9]);
                     FundReal fundEntity = FundReal.builder()
                             .stockCode(code)
-                            .openPrice(realMarket.getOpenPrice())
+                            .openPrice(realMarket[0])
                             .makersFundIn(Double.valueOf(values[1]))
                             .makersFundOut(Double.valueOf(values[2]))
                             .makersInFlow(Double.valueOf(values[3]))
@@ -108,8 +108,8 @@ public class RealFundExtract {
                             .retailFuntOut(Double.valueOf(values[6]))
                             .retailInFlow(Double.valueOf(values[7]))
                             .amounts(amount)
-                            .pctChg(realMarket.getPctChg())
-                            .exchange(realMarket.getExchange())
+                            .pctChg(realMarket[1])
+                            .exchange(realMarket[2])
                             .createTime(LocalDate.now().toString())
                             .build();
                     redisTemplate.opsForList().rightPushAll("lt_fund_real",JSON.toJSONString(fundEntity));
@@ -124,8 +124,8 @@ public class RealFundExtract {
          * 按照特定的规则拆分数据
          * @return
          */
-        public Map<String,RealMarket> resultSplit(String results){
-            Map<String,RealMarket> map = new HashMap<>();
+        public Map<String,Double[]> resultSplit(String results){
+            Map<String,Double[]> map = new HashMap<>();
             StringTokenizer token = new StringTokenizer(results,";");
             while(token.hasMoreTokens()){
                 String result = token.nextToken();
@@ -134,22 +134,13 @@ public class RealFundExtract {
                 String[] values = result.split("~");
                 if(values.length < 38)
                     continue;
-                RealMarket realMarket = RealMarket.builder()
-                        .openPrice(Double.valueOf(values[5]))
-                        .pctChg(Double.valueOf(values[32]))
-                        .exchange(Double.valueOf(values[38]))
-                        .build();
-                map.put(values[2],realMarket);
+                Double [] var = new Double[3];
+                var[0] = Double.valueOf(values[5]);//开盘价
+                var[1] = Double.valueOf(values[32]);//涨幅
+                var[2] = Double.valueOf(values[38]);//换手率
+                map.put(values[2],var);
             }
             return map;
         }
-    }
-
-    @Data
-    @Builder
-    class RealMarket {
-        private double pctChg;
-        private double exchange;
-        private double openPrice;
     }
 }

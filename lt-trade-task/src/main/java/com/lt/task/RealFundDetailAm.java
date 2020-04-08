@@ -3,6 +3,7 @@ package com.lt.task;
 import com.alibaba.fastjson.JSON;
 import com.lt.entity.ClinchDetail;
 import com.lt.entity.FundEntity;
+import com.lt.entity.FundReal;
 import com.lt.utils.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,9 +37,15 @@ public class RealFundDetailAm {
     private RedisTemplate<String,String> redisTemplate;
     @Autowired
     ThreadPoolExecutor threadPoolExecutor;
+    private static List<FundReal> fundReals = null;
 
-    @Scheduled(cron = "0 40 11 * * ? ")// 0/1 * * * * *
+    @Scheduled(cron = "0 50 11 * * ? ")// 0/1 * * * * *
     public void execute() {
+        fundReals = new ArrayList<>(Constants.STOCK_CODE.size());
+        List<String> fundRealAms = redisTemplate.opsForList().range("lt_fund_real", 0, -1);
+        for (String fund : fundRealAms) {
+            fundReals.add(JSON.parseObject(fund, FundReal.class));
+        }
         List<List<String>> codes = RealCodeUtil.getCodesList(splitSize,Constants.STOCK_CODE,null);
         CountDownLatch latch = new CountDownLatch(codes.size());
         for (int i = 0; i < codes.size(); i++) {
@@ -52,5 +59,9 @@ public class RealFundDetailAm {
         }
         redisTemplate.expire(key, 20 * 60 * 60, TimeUnit.SECONDS);
         log.info("=============================上午交易明细指标收集完成========================");
+    }
+
+    public static List<FundReal> getFundReals(){
+        return fundReals;
     }
 }
