@@ -46,7 +46,11 @@ public class RealFundDetailAm {
         for (String fund : fundRealAms) {
             fundReals.add(JSON.parseObject(fund, FundReal.class));
         }
-        List<List<String>> codes = RealCodeUtil.getCodesList(splitSize,Constants.STOCK_CODE,null);
+//        List<List<String>> codes = RealCodeUtil.getCodesList(splitSize,Constants.STOCK_CODE,null);
+        List<List<String>> codes = new ArrayList<>();
+        List<String> code = new ArrayList<>();
+        code.add("sh600758");
+        codes.add(code);
         CountDownLatch latch = new CountDownLatch(codes.size());
         for (int i = 0; i < codes.size(); i++) {
             threadPoolExecutor.execute(new FundDetailThread(key,0,codes.get(i),latch,redisTemplate));
