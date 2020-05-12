@@ -32,6 +32,7 @@ public class HelloController {
 
     @GetMapping
     public String hello2(String msg){
+        System.out.println("================"+msg);
         return helloService.hello(msg)+":"+serverPort;
     }
 

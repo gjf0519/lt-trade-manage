@@ -113,6 +113,7 @@ public class RealFundExtract {
                             .createTime(LocalDate.now().toString())
                             .build();
                     redisTemplate.opsForList().rightPushAll("lt_fund_real",JSON.toJSONString(fundEntity));
+                    redisTemplate.expire("lt_fund_real", 20 * 60 * 60, TimeUnit.SECONDS);
                 }
             } catch (Exception e){
                 log.info("实时资金数据获取异常",e);

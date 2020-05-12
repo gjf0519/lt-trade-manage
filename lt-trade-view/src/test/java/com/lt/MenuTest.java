@@ -3,6 +3,7 @@ package com.lt;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.lt.entity.LtMenu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class MenuTest {
 
         List<Node> nodes = new ArrayList<>();
         //模拟数据库存储树结构
-        nodes.add(new Node("1","root",1,null));
+        nodes.add(new Node("1","root",1,"0"));
         nodes.add(new Node("2","a",1,"1"));
         nodes.add(new Node("3","b",1,"1"));
         nodes.add(new Node("4","c",1,"1"));
@@ -28,75 +29,49 @@ public class MenuTest {
         nodes.add(new Node("6","e",1,"2"));
         nodes.add(new Node("7","f",1,"3"));
         nodes.add(new Node("8","g",1,"7"));
-        nodes.add(new Node("9","h",1,null));
-        System.out.println("result:" + JSON.toJSONString(getTree("0",nodes)));
+        System.out.println("result:" + JSON.toJSONString(menuTrees(nodes)));
+        List<Node> list = menuTrees(nodes);
+        Node node = new Node("1","root",1,"0");
+        List<Node> childMenu = new ArrayList<Node>();
+        List<Node> listAny = treeMenuList(nodes,"7",childMenu);
+        System.out.println(JSON.toJSONString(listAny));
 //        System.out.println("result:" + JSON.toJSONString(parseTree(nodes)));
 //
 //        System.out.println("child:"+JSON.toJSONString(getValues ("7",nodes)));
+    }
+    public static List<Node> treeMenuList(List<Node> menuList, String pid,List<Node> childMenu) {
+        for (Node mu : menuList) {
+            //遍历出父id等于参数的id，add进子节点集合
+            if (mu.getParentId().equals(pid)) {
+                //递归遍历下一级
+                childMenu.add(mu);
+                treeMenuList(menuList, mu.getId(),childMenu);
+            }
+        }
+        return childMenu;
     }
 
     /**
      * 递归创建树形结构
      */
-    private static List<Node> getTree(String parentId,List<Node> nodeList) {
-        List<Node> threeNodeList = new ArrayList<>() ;
-        for (Node entity : nodeList) {
-            String nodeId = entity.getId() ;
-            String nodeParentId = entity.getParentId() ;
-            if (parentId.equals(nodeParentId)) {
-                List<Node> childList = getTree(nodeId,nodeList) ;
-                if (childList != null && childList.size()>0){
-                    entity.setChildNodes(childList);
-                }
-                threeNodeList.add(entity) ;
+    public static List<Node> menuTrees(List<Node> menus){
+        List<Node> treeMenus =new  ArrayList<Node>();
+        for(Node menuNode : menus) {
+            if(!menuNode.getParentId().equals("0"))
+                continue;
+            menuNode=buildTree(menuNode,menus);
+            treeMenus.add(menuNode);
+        }
+        return treeMenus;
+    }
+
+    private static Node buildTree(Node menuNode,List<Node> menus){
+        for(Node item : menus) {
+            if(item.getParentId().equals(menuNode.getId())) {
+                menuNode.getChildNodes().add(buildTree(item,menus));
             }
         }
-        return threeNodeList ;
-    }
-
-    private static String getValues (String id,List<Node> nodeList){
-        return getParents (id,nodeList,new ArrayList<>(),0);
-    }
-
-    private static String getLabel (String id,List<Node> nodeList){
-        return getParents (id,nodeList,new ArrayList<>(),1);
-    }
-
-    private static String getParents (String id,List<Node> nodeList,List<String> list,int sn){
-        for (Node entity : nodeList) {
-            if (entity.getId().equals(id)) {
-                String var = 0 == sn ? entity.getId() : entity.getName();
-                list.add(var);
-                if(entity.getParentId() == null){
-                    return JSON.toJSONString(list);
-                }
-                getParents(entity.getParentId(),nodeList,list,sn) ;
-            }
-        }
-        return String.join(",",list) ;
-    }
-
-
-    public static List<Node> parseTree(List<Node> list){
-        List<Node> result = new ArrayList<Node>();
-        for (Node dict : list) {
-            if(null == dict.getParentId()) {
-                result.add(dict);
-            }
-        }
-        for (Node parent : result) {
-            recursiveTree(parent, list);
-        }
-        return result;
-    }
-
-    public static void recursiveTree(Node parent, List<Node> list) {
-        for (Node menu : list) {
-            if(parent.getId().equals(menu.getParentId())) {
-                recursiveTree(menu, list);
-                parent.getChildNodes().add(menu);
-            }
-        }
+        return menuNode;
     }
 }
 

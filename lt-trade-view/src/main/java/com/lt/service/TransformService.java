@@ -127,7 +127,6 @@ public class TransformService {
      */
     public void savePmData(){
         this.saveDailyBasic();
-        this.saveFundDetailPm();
         this.calculateFivePctChg();
     }
 
@@ -144,16 +143,6 @@ public class TransformService {
         fundService.saveDailyBasic(dailys);
     }
 
-    /**
-     *交易明细下午统计指标
-     */
-    private void saveFundDetailPm() {
-        List<String> fundPms = redisTemplate.opsForList().range("lt_fund_detail_all", 0, -1);
-        for (String fund : fundPms) {
-            FundEntity fundEntity =  JSON.parseObject(fund,FundEntity.class);
-            fundService.updateRepetitive(fundEntity);
-        }
-    }
 
     /**
      * 股票过滤

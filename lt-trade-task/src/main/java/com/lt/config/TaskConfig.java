@@ -1,6 +1,9 @@
 package com.lt.config;
 
-import com.lt.task.*;
+import com.lt.task.DailyBasicExtract;
+import com.lt.task.DownLoadGif;
+import com.lt.task.RealFundDetailAm;
+import com.lt.task.RealFundExtract;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -38,26 +41,6 @@ public class TaskConfig implements SchedulingConfigurer {
     }
 
     /**
-     * 上午成交明细
-     * @return
-     */
-    @Bean
-    public RealFundDetailAm realFundDetailAm(){
-        RealFundDetailAm realFundDetailAm = new RealFundDetailAm();
-        return realFundDetailAm;
-    }
-
-    /**
-     * 当前成交明细
-     * @return
-     */
-    @Bean
-    public RealFundDetailAll realFundDetailAll(){
-        RealFundDetailAll realFundDetailAll = new RealFundDetailAll();
-        return realFundDetailAll;
-    }
-
-    /**
      * 每日指标
      * @return
      */
@@ -75,6 +58,12 @@ public class TaskConfig implements SchedulingConfigurer {
     public DownLoadGif downLoadGif(){
         DownLoadGif downLoadGif = new DownLoadGif();
         return downLoadGif;
+    }
+
+    @Bean
+    public RealFundDetailAm realFundDetail163Am(){
+        RealFundDetailAm realFundDetail163Am = new RealFundDetailAm();
+        return realFundDetail163Am;
     }
 
 }
