@@ -576,7 +576,7 @@ public class TimeUtil {
      * @return
      * @throws ParseException
      */
-    public static boolean isEffectiveDate(String startStr, String endStr,String format) throws ParseException {
+    public static boolean isEffectiveDate(String startStr, String endStr,String format){
         if(startStr == null || endStr == null){
             return false;
         }

@@ -36,6 +36,7 @@ public class FundReal {
     private double pctChg;
     //换手率
     private double exchange;
+    //开盘价
     private double openPrice;
     //每分钟价格变动
     private String clinchChangeMinute;

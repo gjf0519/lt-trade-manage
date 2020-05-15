@@ -20,11 +20,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author gaijf
@@ -34,16 +33,20 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class RestConfig {
 
-    private static final int corePoolSize = 2;
+    private static final int corePoolSize = 4;
     private static final int maximumPoolSize = 8;
-    private static final long keepAliveTime = 2;
-    private static final int capacity = 50;
+    private static final int keepAliveTime = 300;
 
     @Bean
-    public ThreadPoolExecutor threadPoolExecutor(){
-        return new ThreadPoolExecutor(
-                corePoolSize,maximumPoolSize,keepAliveTime,
-                TimeUnit.SECONDS,new ArrayBlockingQueue<>(capacity));
+    public ThreadPoolTaskExecutor threadPoolExecutor(){
+        ThreadPoolTaskExecutor executor = new ExecutorInfo();
+        executor.setCorePoolSize(corePoolSize);
+        executor.setMaxPoolSize(maximumPoolSize);
+        executor.setKeepAliveSeconds(keepAliveTime);
+        executor.setThreadNamePrefix("NativeExecutor");
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.initialize();
+        return executor;
     }
 
     @Bean

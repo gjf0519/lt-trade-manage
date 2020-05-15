@@ -1,13 +1,12 @@
 package com.lt.service;
 
 import com.lt.common.page.PageParams;
-import com.lt.entity.DailyBasic;
-import com.lt.entity.FundDetail;
+import com.lt.entity.DealRecord;
 import com.lt.entity.FundEntity;
 import com.lt.entity.FundReal;
+import com.lt.entity.GatherRecord;
 import com.lt.mapper.FundMapper;
 import com.lt.vo.DailyBasicVo;
-import com.lt.vo.RedoAllPctVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,28 +35,19 @@ public class FundService {
         return fundMapper.getFundList(pageParams);
     }
 
-    public List<RedoAllPctVo> getRedoAllPct() {
-        return fundMapper.getRedoAllPct();
+    @Transactional(rollbackFor = Exception.class)
+    public void saveDailyBasic(Map<String, Object> result){
+        fundMapper.saveDailyBasic(result);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void saveRepetitive(FundEntity fundEntity) {
-        fundMapper.saveRepetitive(fundEntity);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public void saveDailyBasic(List<Map<String, Object>> results){
-        fundMapper.saveDailyBasic(results);
+    public void saveDailyBasics(List<Map<String, Object>> results){
+        fundMapper.saveDailyBasics(results);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void saveFund(FundReal fundReal){
         fundMapper.saveFund(fundReal);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public void updateRepetitive(FundEntity fundEntity) {
-        fundMapper.updateRepetitive(fundEntity);
     }
 
     public List<DailyBasicVo> queryByStockCode(String code, String tradeDate){
@@ -72,11 +62,7 @@ public class FundService {
         fundMapper.updateFivePctChg(code,  five_pct_chg, tradeDate);
     }
 
-    public List<String> queryFundDetail(String createTime) {
-        return fundMapper.queryFundDetail(createTime);
-    }
-
-    public List<FundDetail> queryDealNum(String code, String createTime) {
+    public Integer queryDealNum(String code, String createTime) {
         return fundMapper.queryDealNum(code,createTime);
     }
 
@@ -86,5 +72,15 @@ public class FundService {
 
     public List<String> queryDailyBasic(String createTime) {
         return fundMapper.queryDailyBasic(createTime);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void saveGatherRecord(List<GatherRecord> records) {
+        fundMapper.saveGatherRecord(records);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void saveStatDeal(DealRecord dealRecord) {
+        fundMapper.saveStatDeal(dealRecord);
     }
 }

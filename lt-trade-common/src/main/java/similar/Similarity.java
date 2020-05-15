@@ -1,4 +1,4 @@
-package com.lt.entity;
+package similar;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 /**
  * @author gaijf
  * @description
- * @date 2020/4/15
+ * @date 2020/5/14
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GatherFund {
-    private String pchChg;
-    private int dealSoleNum;
-    private int dealNum;
+public class Similarity {
+    private String code;
+    private double similarityRido;
+    private int similaritySize;
 }

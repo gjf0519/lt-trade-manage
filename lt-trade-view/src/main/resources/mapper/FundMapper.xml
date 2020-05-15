@@ -29,13 +29,27 @@
         </if>
 	</select>
 
-    <insert id="saveDailyBasic" parameterType="java.util.List">
+    <insert id="saveDailyBasic" parameterType="java.util.Map">
+        insert into lt_daily_basic (ts_code,trade_date,close,turnover_rate,turnover_rate_f,volume_ratio
+        ,ps,ps_ttm,total_share,float_share,free_share,total_mv,circ_mv,pct_chg,amount) values
+        (#{ts_code},#{trade_date},#{close},#{turnover_rate},#{turnover_rate_f},#{volume_ratio},#{ps},
+            #{ps_ttm},#{total_share},#{float_share},#{free_share},#{total_mv},#{circ_mv},#{pct_chg},#{amount})
+    </insert>
+
+    <insert id="saveDailyBasics" parameterType="java.util.List">
         insert into lt_daily_basic (ts_code,trade_date,close,turnover_rate,turnover_rate_f,volume_ratio
         ,ps,ps_ttm,total_share,float_share,free_share,total_mv,circ_mv,pct_chg,amount) values
         <foreach collection="list" item="item" index="index" separator=",">
             (#{item.ts_code},#{item.trade_date},#{item.close},#{item.turnover_rate},#{item.turnover_rate_f},#{item.volume_ratio},#{item.ps},
             #{item.ps_ttm},#{item.total_share},#{item.float_share},#{item.free_share},#{item.total_mv},#{item.circ_mv}
             ,#{item.pct_chg},#{item.amount})
+        </foreach>
+    </insert>
+
+    <insert id="saveGatherRecord" parameterType="java.util.List">
+        insert into lt_gather_record (stock_code,real_time,price,pch_chg,deal_num,deal_sole_num,create_time) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.stockCode},#{item.realTime},#{item.price},#{item.pchChg},#{item.dealNum},#{item.dealSoleNum},date_format(NOW(),'%Y-%m-%d'))
         </foreach>
     </insert>
 </mapper>

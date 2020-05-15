@@ -4,24 +4,14 @@ server:
 spring:
   application:
     name: lt-trade-task
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
   main:
-    allow-bean-definition-overriding: true
-  redis:
-    host: 212.64.69.77
-    port: 6379
-    password: gjf*#123
-    jedis:
-      pool:
-        max-active: 8
-        max-wait: -1
-        max-idle: 500
-        min-idle: 0
-      lettuce:
-        shutdown-timeout: 0
+      allow-bean-definition-overriding: true
+
+rocketmq:
+  name-server: 212.64.69.77:9876
+#  name-server: 127.0.0.1:9876
+  producer:
+    group: TASK-PRODUCER-GROUP
 
 logging:
   level:

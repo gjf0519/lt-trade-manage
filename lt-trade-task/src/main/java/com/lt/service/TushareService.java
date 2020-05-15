@@ -2,12 +2,11 @@ package com.lt.service;
 
 import com.alibaba.fastjson.JSON;
 import com.lt.entity.TushareResult;
-import com.lt.utils.FileWriteUtil;
 import com.lt.utils.RestTemplateUtil;
 import com.lt.utils.TimeUtil;
 import com.lt.utils.TushareUtil;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,7 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author gaijf
@@ -24,9 +22,9 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class TushareService {
-
+    private static final String topic = "TUSHARE-DAILY-BASIC";
     @Autowired
-    private RedisTemplate<String,String> redisTemplate;
+    private RocketMQTemplate rocketMQTemplate;
 
     /**
      *每日指标
@@ -65,9 +63,8 @@ public class TushareService {
             }
         }
         for(Map<String,Object> var : results){
-            redisTemplate.opsForList().rightPushAll("lt_daily_basic",JSON.toJSONString(var));
+            rocketMQTemplate.convertAndSend(topic, var);;
         }
-        redisTemplate.expire("lt_daily_basic", 20 * 60 * 60, TimeUnit.SECONDS);
     }
 
     /**

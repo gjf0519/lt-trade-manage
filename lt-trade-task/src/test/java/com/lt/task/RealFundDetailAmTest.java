@@ -1,12 +1,8 @@
 package com.lt.task;
 
-import com.alibaba.fastjson.JSON;
 import com.lt.entity.ClinchDetail;
-import com.lt.entity.FundEntity;
 import com.lt.utils.Constants;
-import com.lt.utils.FileWriteUtil;
 import com.lt.utils.RestTemplateUtil;
-import com.lt.utils.TimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +20,7 @@ import java.util.List;
 @SpringBootTest
 public class RealFundDetailAmTest {
     @Autowired
-    RealFundDetailAm realFundDetailAm;
+    RealDealRecord realFundDetailAm;
 
     @Test
     public void execute() throws ParseException {

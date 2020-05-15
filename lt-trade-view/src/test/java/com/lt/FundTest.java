@@ -2,7 +2,6 @@ package com.lt;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.lt.entity.FundDetail;
 import com.lt.entity.FundReal;
 import com.lt.service.FundService;
 import com.lt.utils.BigDecimalUtil;
@@ -190,28 +189,28 @@ public class FundTest {
     /**
      * 计算五日平均成交笔数与当天成交笔数 频率
      */
-    @Test
-    void calculateFiveVolumeRatio() {
-//        String createTime = LocalDate.now().toString();
-        String createTime = "2020-04-03";
-        List<String> codes = fundService.queryFundDetail(createTime);
-        for(String code : codes){
-            List<FundDetail> vars = fundService.queryDealNum(code,createTime);
-            int dealNum = 0;
-            for(int i = 1;i < vars.size();i++){
-                FundDetail detail = vars.get(i);
-                dealNum = dealNum + detail.getDealNum();
-            }
-            int size = vars.size()-1;
-            if(size == 0){
-                System.out.println(code+"========================");
-                continue;
-            }
-            double dealNumAvg = BigDecimalUtil.div(dealNum,size,2);
-            double five_volume_ratio = BigDecimalUtil.div(vars.get(0).getDealNum(),dealNumAvg,2);
-            fundService.updateFiveVolumeRatio(code,five_volume_ratio,createTime);//lt_fund_detail 表
-        }
-    }
+//    @Test
+//    void calculateFiveVolumeRatio() {
+////        String createTime = LocalDate.now().toString();
+//        String createTime = "2020-04-03";
+//        List<String> codes = fundService.queryFundDetail(createTime);
+//        for(String code : codes){
+//            List<FundDetail> vars = fundService.queryDealNum(code,createTime);
+//            int dealNum = 0;
+//            for(int i = 1;i < vars.size();i++){
+//                FundDetail detail = vars.get(i);
+//                dealNum = dealNum + detail.getDealNum();
+//            }
+//            int size = vars.size()-1;
+//            if(size == 0){
+//                System.out.println(code+"========================");
+//                continue;
+//            }
+//            double dealNumAvg = BigDecimalUtil.div(dealNum,size,2);
+//            double five_volume_ratio = BigDecimalUtil.div(vars.get(0).getDealNum(),dealNumAvg,2);
+//            fundService.updateFiveVolumeRatio(code,five_volume_ratio,createTime);//lt_fund_detail 表
+//        }
+//    }
 
     public static void main(String[] args) {
         List<String> times = new ArrayList<>();

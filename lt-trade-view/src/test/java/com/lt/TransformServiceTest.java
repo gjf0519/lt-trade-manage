@@ -19,18 +19,18 @@ public class TransformServiceTest {
     @Autowired
     TransformService transformService;
 
-    @Test
-    public void saveAmData(){
-        transformService.saveAmData();
-    }
-
-    @Test
-    public void savePmData(){
-        transformService.savePmData();
-    }
-
-    @Test
-    public void filterStockCodes(){
-        transformService.filterStockCodes();
-    }
+//    @Test
+//    public void saveAmData(){
+//        transformService.saveAmData();
+//    }
+//
+//    @Test
+//    public void savePmData(){
+//        transformService.savePmData();
+//    }
+//
+//    @Test
+//    public void filterStockCodes(){
+//        transformService.filterStockCodes();
+//    }
 }

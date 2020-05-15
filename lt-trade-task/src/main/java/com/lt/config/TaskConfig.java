@@ -2,7 +2,7 @@ package com.lt.config;
 
 import com.lt.task.DailyBasicExtract;
 import com.lt.task.DownLoadGif;
-import com.lt.task.RealFundDetailAm;
+import com.lt.task.RealDealRecord;
 import com.lt.task.RealFundExtract;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -61,9 +61,9 @@ public class TaskConfig implements SchedulingConfigurer {
     }
 
     @Bean
-    public RealFundDetailAm realFundDetail163Am(){
-        RealFundDetailAm realFundDetail163Am = new RealFundDetailAm();
-        return realFundDetail163Am;
+    public RealDealRecord realFundDetail163Am(){
+        RealDealRecord realDealRecord = new RealDealRecord();
+        return realDealRecord;
     }
 
 }
